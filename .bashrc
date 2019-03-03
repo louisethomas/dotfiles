@@ -4,6 +4,7 @@
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
+[[ -z "$TMUX" ]] && exec tmux #start tmux when using bash
 
 alias ls='ls --color=auto'
 
