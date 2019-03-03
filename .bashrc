@@ -9,3 +9,5 @@ alias ls='ls --color=auto'
 
 PROMPT_COMMAND='status="[$?]"; if [[ $status == "[0]" ]]; then status=; fi'
 PS1='[\u@\h \W]$status\$ '
+
+set -o vi

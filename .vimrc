@@ -18,6 +18,7 @@ Plugin 'skywind3000/asyncrun.vim' " Execute python scripts asynchronously
 Plugin 'tomtom/tcomment_vim' " Commenter  
 Plugin 'Yggdroot/indentLine' " Display indentation levels
 Plugin 'altercation/vim-colors-solarized' " Colour scheme
+Plugin 'morhetz/gruvbox' " Gruvbox color scheme 
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -34,10 +35,11 @@ set wildmenu
 set mouse=a
 set incsearch
 set hlsearch
-"Highlight words on double-click 
-nnoremap <silent> <2-LeftMouse> :let @/='\V\<'.escape(expand('<cword>'), '\').'\>'<cr>:set hls<cr> 
 
 syntax enable
 set background=dark
-let g:solarized_termcolors=256
-colorscheme solarized
+colorscheme gruvbox
+
+
+let $PYTHONUNBUFFERED = 1
+let g:asyncrun_open = 10
