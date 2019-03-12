@@ -1,4 +1,5 @@
 set nocompatible              " required
+set shell=/bin/bash
 filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
@@ -7,7 +8,7 @@ call vundle#begin()
 
 
 " " let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
+Plugin 'VundleVim/Vundle.vim'
 "
 " " add all your plugins here 
 Plugin 'Valloric/YouCompleteMe' " Python auto-completer
