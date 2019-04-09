@@ -20,6 +20,8 @@ Plugin 'tomtom/tcomment_vim' " Commenter
 Plugin 'Yggdroot/indentLine' " Display indentation levels
 Plugin 'altercation/vim-colors-solarized' " Colour scheme
 Plugin 'morhetz/gruvbox' " Gruvbox color scheme 
+Plugin 'scrooloose/nerdtree' " File tree
+
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -44,3 +46,12 @@ colorscheme gruvbox
 
 let $PYTHONUNBUFFERED = 1
 let g:asyncrun_open = 10
+
+" close auto-complete window 
+let g:ycm_autoclose_preview_window_after_completion=1
+
+" Enable folding
+set foldmethod=indent
+set foldlevel=99
+" Enable folding with spacebar
+nnoremap <space> za
