@@ -21,6 +21,7 @@ Plugin 'Yggdroot/indentLine' " Display indentation levels
 Plugin 'altercation/vim-colors-solarized' " Colour scheme
 Plugin 'morhetz/gruvbox' " Gruvbox color scheme 
 Plugin 'scrooloose/nerdtree' " File tree
+Plugin 'powerline/powerline' "powerline
 
 
 " All of your Plugins must be added before the following line
@@ -38,6 +39,8 @@ set wildmenu
 set mouse=a
 set incsearch
 set hlsearch
+
+set laststatus=2 "show powerline all the time
 
 syntax enable
 set background=dark
