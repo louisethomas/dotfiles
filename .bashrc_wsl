@@ -22,3 +22,7 @@ powerline-daemon -q
 POWERLINE_BASH_CONTINUATION=1
 POWERLINE_BASH_SELECT=1
 . /usr/share/powerline/bindings/bash/powerline.sh
+
+# arduino-cli shortcuts
+alias compile='arduino-cli compile -b arduino:avr:nano:cpu=atmega328old'
+alias upload='arduino-cli upload -p /dev/ttyUSB0 -b arduino:avr:nano:cpu=atmega328old'
