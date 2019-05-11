@@ -113,5 +113,5 @@ if ! shopt -oq posix; then
 fi
 
 # add shortcuts for arduino compiling and uploading
-alias compile='compile -b arduino:avr:nano:cpu=atmega328old'
-alias upload='upload -p /dev/ttyUSB0 -b arduino:avr:nano:cpu=atmega328old'
+alias compile='arduino-cli compile -b arduino:avr:nano:cpu=atmega328old'
+alias upload='arduino-cli upload -p /dev/ttyUSB0 -b arduino:avr:nano:cpu=atmega328old'
