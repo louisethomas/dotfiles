@@ -26,3 +26,7 @@ POWERLINE_BASH_SELECT=1
 # arduino-cli shortcuts
 alias compile='arduino-cli compile -b arduino:avr:nano:cpu=atmega328old'
 alias upload='arduino-cli upload -p /dev/ttyUSB0 -b arduino:avr:nano:cpu=atmega328old'
+
+# pi ssh shortcuts
+alias pumpi='ssh pi@10.147.20.141'
+alias canolapi='ssh pi@10.147.20.170'
