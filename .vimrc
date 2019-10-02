@@ -3,7 +3,7 @@ set shell=/bin/bash
 filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
-set rtp+=/home/louise/.vim/bundle/Vundle.vim
+set rtp+=~/dotfiles/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 
@@ -11,9 +11,7 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 "
 " " add all your plugins here 
-Plugin 'Valloric/YouCompleteMe' " Python auto-completer
-Plugin 'w0rp/ale' " Python syntax checker
-Plugin 'nvie/vim-flake8' 
+Plugin 'ycm-core/YouCompleteMe' " Python auto-completer
 Plugin 'vim-scripts/indentpython.vim'
 Plugin 'skywind3000/asyncrun.vim' " Execute python scripts asynchronously
 Plugin 'tomtom/tcomment_vim' " Commenter  
