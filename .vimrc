@@ -16,7 +16,6 @@ Plugin 'vim-scripts/indentpython.vim'
 Plugin 'skywind3000/asyncrun.vim' " Execute python scripts asynchronously
 Plugin 'tomtom/tcomment_vim' " Commenter  
 Plugin 'Yggdroot/indentLine' " Display indentation levels
-Plugin 'altercation/vim-colors-solarized' " Colour scheme
 Plugin 'morhetz/gruvbox' " Gruvbox color scheme 
 Plugin 'scrooloose/nerdtree' " File tree
 Plugin 'powerline/powerline' "powerline
@@ -55,4 +54,7 @@ let g:ycm_autoclose_preview_window_after_completion=1
 set foldmethod=indent
 set foldlevel=99
 " Enable folding with spacebar
-nnoremap <space> za
+"nnoremap <space> za
+
+" Remap esc to 'ii' for exiting insert mode 
+inoremap ii <esc>l
