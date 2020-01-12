@@ -17,7 +17,7 @@ PROMPT_COMMAND='status="[$?]"; if [[ $status == "[0]" ]]; then status=; fi'
 PS1='\e[1;35m[\w]$status\$ \e[0m '
 
 set -o vi
-cd /mnt/c/Users/louise/Documents  #start in Documents folder
+#cd /mnt/c/Users/louise/Documents  #start in Documents folder
 
 # start in VcXsrv
 export DISPLAY=:0
@@ -35,3 +35,6 @@ alias upload='arduino-cli upload -p /dev/ttyUSB0 -b arduino:avr:nano:cpu=atmega3
 # pi ssh shortcuts
 alias pumpi='ssh pi@10.147.20.141'
 alias canolapi='ssh pi@10.147.20.170'
+
+# shortcut for Documents directory
+alias documents='cd /mnt/c/Users/louise/Documents'
