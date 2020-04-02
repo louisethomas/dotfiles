@@ -19,6 +19,7 @@ Plugin 'Yggdroot/indentLine' " Display indentation levels
 Plugin 'morhetz/gruvbox' " Gruvbox color scheme 
 Plugin 'scrooloose/nerdtree' " File tree
 Plugin 'powerline/powerline' "powerline
+Plugin 'Mizuchi/vim-ranger' " Ranger file manager
 
 
 " All of your Plugins must be added before the following line

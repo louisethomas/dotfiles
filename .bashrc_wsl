@@ -38,3 +38,6 @@ alias canolapi='ssh pi@10.147.20.170'
 
 # shortcut for Documents directory
 alias documents='cd /mnt/c/Users/louise/Documents'
+
+# prevent ranger from loading config file twice
+export RANGER_LOAD_DEFAULT_RC=false
