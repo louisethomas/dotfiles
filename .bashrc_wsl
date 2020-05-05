@@ -41,3 +41,6 @@ alias documents='cd /mnt/c/Users/louise/Documents'
 
 # prevent ranger from loading config file twice
 export RANGER_LOAD_DEFAULT_RC=false
+
+# shortcut for pipenv (python virtual environment)
+alias prp="pipenv run python"

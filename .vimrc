@@ -54,8 +54,12 @@ let g:ycm_autoclose_preview_window_after_completion=1
 " Enable folding
 set foldmethod=indent
 set foldlevel=99
+
 " Enable folding with spacebar
-"nnoremap <space> za
+nnoremap <space> za
 
 " Remap esc to 'ii' for exiting insert mode 
 inoremap ii <esc>l
+
+" Clear last search highlighting
+nnoremap <CR> :noh<CR><CR>
