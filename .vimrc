@@ -20,6 +20,8 @@ Plugin 'morhetz/gruvbox' " Gruvbox color scheme
 Plugin 'scrooloose/nerdtree' " File tree
 Plugin 'powerline/powerline' "powerline
 Plugin 'Mizuchi/vim-ranger' " Ranger file manager
+"Plugin 'jupyter-vim/jupyter-vim' " 2-way integration between Vim and Jupyter
+Plugin 'jpalardy/vim-slime' "for python REPL (read-eval-print-loop)
 
 
 " All of your Plugins must be added before the following line
@@ -37,6 +39,7 @@ set wildmenu
 set mouse=a
 set incsearch
 set hlsearch
+set splitbelow
 
 set laststatus=2 "show powerline all the time
 
@@ -62,4 +65,14 @@ nnoremap <space> za
 inoremap ii <esc>l
 
 " Clear last search highlighting
-nnoremap <CR> :noh<CR><CR>
+nnoremap <CR> :noh<CR>
+
+" Set target for vim-slime
+let g:slime_target = "vimterminal"
+
+" Execute python code 
+autocmd FileType python nnoremap <buffer> = :w<CR>:!pipenv run python %<CR>
+
+" Set tab to indent
+nnoremap <Tab> >> 
+nnoremap <S-Tab> << 
