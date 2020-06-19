@@ -1,6 +1,6 @@
 set nocompatible              " required
 set shell=/bin/bash
-filetype off                  " required
+filetype on                  " required
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/dotfiles/.vim/bundle/Vundle.vim
@@ -43,9 +43,22 @@ set splitbelow
 
 set laststatus=2 "show powerline all the time
 
-syntax enable
+" Set colors
 set background=dark
+let g:gruvbox_bold = 1
+let g:gruvbox_italic = 1
+let g:gruvbox_italicize_strings=1
 colorscheme gruvbox
+syntax enable
+let python_highlight_all=1
+
+set cursorline
+" Default Colors for CursorLine
+highlight  CursorLine ctermbg=None ctermfg=None
+" Change Color when entering Insert Mode
+autocmd InsertEnter * highlight  CursorLine ctermbg=DarkGrey ctermfg=Red
+" Revert Color to default when leaving Insert Mode
+autocmd InsertLeave * highlight  CursorLine ctermbg=None ctermfg=None
 
 
 let $PYTHONUNBUFFERED = 1
@@ -65,14 +78,16 @@ nnoremap <space> za
 inoremap ii <esc>l
 
 " Clear last search highlighting
-nnoremap <CR> :noh<CR>
+nnoremap <CR> :noh<CR><CR>
 
 " Set target for vim-slime
 let g:slime_target = "vimterminal"
 
-" Execute python code 
+" Execute python code using =
 autocmd FileType python nnoremap <buffer> = :w<CR>:!pipenv run python %<CR>
 
 " Set tab to indent
 nnoremap <Tab> >> 
 nnoremap <S-Tab> << 
+vnoremap <Tab> >
+vnoremap <S-Tab> <
