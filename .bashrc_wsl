@@ -44,3 +44,9 @@ export RANGER_LOAD_DEFAULT_RC=false
 
 # shortcut for pipenv (python virtual environment)
 alias prp="pipenv run python"
+
+# alias for running Chinese character search
+alias 汉字="pipenv run python ~/chinese-character-search/search_char.py"
+
+# alias for deleting swap files
+alias rmswap='rm ~/.cache/vim/swap/*'

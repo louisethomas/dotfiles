@@ -12,6 +12,7 @@ Plugin 'VundleVim/Vundle.vim'
 "
 " " add all your plugins here 
 Plugin 'ycm-core/YouCompleteMe' " Python auto-completer
+Plugin 'nvie/vim-flake8' " Python syntax checker
 Plugin 'vim-scripts/indentpython.vim'
 Plugin 'skywind3000/asyncrun.vim' " Execute python scripts asynchronously
 Plugin 'tomtom/tcomment_vim' " Commenter  
@@ -45,11 +46,8 @@ set laststatus=2 "show powerline all the time
 
 " Set colors
 set background=dark
-let g:gruvbox_bold = 1
-let g:gruvbox_italic = 1
-let g:gruvbox_italicize_strings=1
-colorscheme gruvbox
 syntax enable
+colorscheme gruvbox
 let python_highlight_all=1
 
 set cursorline
@@ -59,7 +57,6 @@ highlight  CursorLine ctermbg=None ctermfg=None
 autocmd InsertEnter * highlight  CursorLine ctermbg=DarkGrey ctermfg=Red
 " Revert Color to default when leaving Insert Mode
 autocmd InsertLeave * highlight  CursorLine ctermbg=None ctermfg=None
-
 
 let $PYTHONUNBUFFERED = 1
 let g:asyncrun_open = 10
@@ -74,20 +71,37 @@ set foldlevel=99
 " Enable folding with spacebar
 nnoremap <space> za
 
-" Remap esc to 'ii' for exiting insert mode 
-inoremap ii <esc>l
+" Remap esc to 'jj' for exiting insert mode 
+inoremap jj <esc>l
 
 " Clear last search highlighting
 nnoremap <CR> :noh<CR><CR>
 
 " Set target for vim-slime
-let g:slime_target = "vimterminal"
+let g:slime_target = "tmux"
+let g:slime_paste_file = "$HOME/.slime_paste"
+let g:slime_default_config = {"socket_name": get(split($TMUX, ","), 0), "target_pane": ":.2"}
 
 " Execute python code using =
-autocmd FileType python nnoremap <buffer> = :w<CR>:!pipenv run python %<CR>
+autocmd FileType python nnoremap <buffer> Z= :w<CR>:!pipenv run python %<CR>
 
 " Set tab to indent
 nnoremap <Tab> >> 
 nnoremap <S-Tab> << 
 vnoremap <Tab> >
 vnoremap <S-Tab> <
+
+" Set tabs to 4 spaces
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+
+" For inserting a single character
+nnoremap ,i i_<Esc>r
+nnoremap ,a a_<Esc>r
+
+" Use F2 to toggle autoindent when pasting 
+nnoremap <F2> :set invpaste paste?<CR>
+set pastetoggle=<F2>
+set showmode
