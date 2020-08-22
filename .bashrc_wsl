@@ -19,8 +19,11 @@ PS1='\e[1;35m[\w]$status\$ \e[0m '
 set -o vi
 #cd /mnt/c/Users/louise/Documents  #start in Documents folder
 
-# start in VcXsrv
-export DISPLAY=:0
+# set display for VcXsrv
+export DISPLAY=`grep -oP "(?<=nameserver ).+" /etc/resolv.conf`:0
+# x11 opengl rendering options 
+export LIBGL_ALWAYS_INDIRECT=0
+export LIBGL_ALWAYS_SOFTWARE=0
 
 # start powerline
 powerline-daemon -q
@@ -46,7 +49,10 @@ export RANGER_LOAD_DEFAULT_RC=false
 alias prp="pipenv run python"
 
 # alias for running Chinese character search
-alias 汉字="pipenv run python ~/chinese-character-search/search_char.py"
+alias 汉字="pipenv run python /mnt/c/Users/louise/Documents/Code/chinese-character-search/search_char.py"
 
 # alias for deleting swap files
 alias rmswap='rm ~/.cache/vim/swap/*'
+
+# alias for updating windows terminal settings
+alias termupdate='cp ~/dotfiles/windowsterminal_settings.json /mnt/c/Users/louise/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json'

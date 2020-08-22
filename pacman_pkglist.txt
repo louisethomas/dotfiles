@@ -26,6 +26,7 @@ less
 make
 man-db
 man-pages
+mpv
 nmap
 noto-fonts
 openssh
@@ -34,6 +35,7 @@ pkgconf
 powerline
 powerline-fonts
 pyenv
+python-jupyter_core
 python-pip
 python-pipenv
 ranger
@@ -50,3 +52,6 @@ vim
 w3m
 wget
 which
+xorg-xclock
+yay
+youtube-dl
