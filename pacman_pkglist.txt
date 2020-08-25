@@ -4,6 +4,7 @@ automake
 base
 cmake
 diffutils
+emacs
 expac
 fakeroot-tcp
 feh
@@ -35,12 +36,12 @@ pkgconf
 powerline
 powerline-fonts
 pyenv
-python-jupyter_core
 python-pip
 python-pipenv
 ranger
 rxvt-unicode
 sed
+spacemacs
 sshfs
 sudo
 systemd

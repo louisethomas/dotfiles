@@ -9,12 +9,14 @@
     "$schema": "https://aka.ms/terminal-profiles-schema",
 
     "defaultProfile": "{a5a97cb8-8961-5535-816d-772efe0c6a3f}",
+    "launchMode": "fullscreen",
+    "alwaysOnTop": true,
 
     // You can add more global application settings here.
     // To learn more about global settings, visit https://aka.ms/terminal-global-settings
 
     // If enabled, selections are automatically copied to your clipboard.
-    "copyOnSelect": false,
+    "copyOnSelect": true,
 
     // If enabled, formatted data is also copied to your clipboard
     "copyFormatting": false,

@@ -12,15 +12,13 @@ Plugin 'VundleVim/Vundle.vim'
 "
 " " add all your plugins here 
 Plugin 'ycm-core/YouCompleteMe' " Python auto-completer
-Plugin 'nvie/vim-flake8' " Python syntax checker
-Plugin 'vim-scripts/indentpython.vim'
+Plugin 'dense-analysis/ale' "Python linting
 Plugin 'skywind3000/asyncrun.vim' " Execute python scripts asynchronously
-Plugin 'tomtom/tcomment_vim' " Commenter  
+Plugin 'tpope/vim-commentary' " Commenter
+Plugin 'tpope/vim-surround' " Add and remove brackets etc
 Plugin 'Yggdroot/indentLine' " Display indentation levels
 Plugin 'morhetz/gruvbox' " Gruvbox color scheme 
-Plugin 'scrooloose/nerdtree' " File tree
 Plugin 'powerline/powerline' "powerline
-Plugin 'Mizuchi/vim-ranger' " Ranger file manager
 "Plugin 'jupyter-vim/jupyter-vim' " 2-way integration between Vim and Jupyter
 Plugin 'jpalardy/vim-slime' "for python REPL (read-eval-print-loop)
 
@@ -83,7 +81,14 @@ let g:slime_paste_file = "$HOME/.slime_paste"
 let g:slime_default_config = {"socket_name": get(split($TMUX, ","), 0), "target_pane": ":.2"}
 
 " Execute python code using =
-autocmd FileType python nnoremap <buffer> Z= :w<CR>:!pipenv run python %<CR>
+autocmd FileType python nnoremap <buffer> Z= :w<CR>:AsyncRun -raw python %<CR>
+
+" ALE shortcuts (python linting)
+nmap <silent> <leader>aj :ALENext<cr>
+nmap <silent> <leader>ak :ALEPrevious<cr>
+nmap <silent> <leader>at :ALEToggle<cr>
+let g:ale_fixers = {'python':['black']}
+let g:ale_fix_on_save = 1
 
 " Set tab to indent
 nnoremap <Tab> >> 
