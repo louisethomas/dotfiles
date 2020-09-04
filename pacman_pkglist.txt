@@ -38,6 +38,7 @@ noto-fonts
 openssh
 patch
 pkgconf
+postgresql
 powerline
 powerline-fonts
 pyenv
