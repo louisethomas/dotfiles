@@ -9,9 +9,7 @@
 # [[ -z "$TMUX" ]] && exec tmux 
 
 # start X server
-if systemctl -q is-active graphical.target && [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
-      exec startx
-fi
+[[ ! $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx
 
 alias ls='ls --color=auto'
 alias dir='dir --color=auto'
