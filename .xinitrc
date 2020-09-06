@@ -33,5 +33,12 @@ fi
 
 VBoxClient-all &
 
+# ibus setup (Chinese character input)
+export GTK_IM_MODULE=ibus
+export XMODIFIERS=@im=ibus
+export QT_IM_MODULE=ibus
+ibus-daemon -drx
+
+
 # start i3
 exec i3
