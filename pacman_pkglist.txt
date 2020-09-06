@@ -34,6 +34,7 @@ man-pages
 mpv
 networkmanager
 nmap
+nomacs
 noto-fonts
 openssh
 patch
