@@ -23,7 +23,7 @@ set -o vi
 source /usr/share/fzf/key-bindings.bash && source /usr/share/fzf/completion.bash 
 
 # mount Google File stream
-. /mnt/c/Users/louise/Documents/scripts/sshfs_drive.sh
+alias gdrive='. /mnt/c/Users/louise/Documents/scripts/snippets/sshfs_drive.sh'
 
 # set display for VcXsrv
 export DISPLAY=`grep -oP "(?<=nameserver ).+" /etc/resolv.conf`:0
