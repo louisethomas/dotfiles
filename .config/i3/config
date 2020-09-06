@@ -179,3 +179,6 @@ bindsym $mod+r mode "resize"
 bar {
         status_command i3status
 }
+
+# Start terminal in first workspace
+exec --no-startup-id i3-msg 'workspace $ws1; exec termite'
