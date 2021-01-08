@@ -19,6 +19,12 @@ go
 grep
 gzip
 htop
+<<<<<<< HEAD
+=======
+i3-gaps
+i3status
+ibus-libpinyin
+>>>>>>> 5ed0d1e79af5e325e0faa9a07b38183a8349f566
 inetutils
 iproute2
 iputils
@@ -29,7 +35,9 @@ man-db
 man-pages
 mpv
 nmap
+nomacs
 noto-fonts
+noto-fonts-sc
 openssh
 patch
 pkgconf

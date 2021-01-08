@@ -4,7 +4,12 @@
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
-[[ -z "$TMUX" ]] && exec tmux #start tmux when using bash
+
+#start tmux when using bash
+# [[ -z "$TMUX" ]] && exec tmux 
+
+# start X server
+[[ ! $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx
 
 alias ls='ls --color=auto'
 alias dir='dir --color=auto'
@@ -12,24 +17,14 @@ alias dir='dir --color=auto'
 # fix folder colors
 LS_COLORS="ow=01;34" && export LS_COLORS
 
-
 PROMPT_COMMAND='status="[$?]"; if [[ $status == "[0]" ]]; then status=; fi'
 PS1='\e[1;35m[\w]$status\$ \e[0m '
 
 set -o vi
-#cd /mnt/c/Users/louise/Documents  #start in Documents folder
+cd ~
 
 # source fzf bindings
 source /usr/share/fzf/key-bindings.bash && source /usr/share/fzf/completion.bash 
-
-# mount Google File stream
-#. /mnt/c/Users/louise/Documents/scripts/sshfs_drive.sh
-
-## set display for VcXsrv
-#export DISPLAY=`grep -oP "(?<=nameserver ).+" /etc/resolv.conf`:0
-## x11 opengl rendering options 
-#export LIBGL_ALWAYS_INDIRECT=0
-#export LIBGL_ALWAYS_SOFTWARE=0
 
 # python path
 export PYTHONPATH="${PYTHONPATH}:/home/louise/.local/lib"
@@ -66,10 +61,3 @@ alias 汉字="python /mnt/c/Users/louise/Documents/scripts/chinese-character-sea
 # alias for deleting swap files
 alias rmswap='rm ~/.cache/vim/swap/*'
 
-# alias for updating windows terminal settings
-# alias termupdate='cp ~/dotfiles/windowsterminal_settings.json /mnt/c/Users/louise/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json'
-
-# # start X server
-# if systemctl -q is-active graphical.target && [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
-#       exec startx
-# fi
