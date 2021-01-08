@@ -182,3 +182,6 @@ bar {
 
 # Start terminal in first workspace
 exec --no-startup-id i3-msg 'workspace $ws1; exec termite'
+
+# Start Picon compositor
+exec --no-startup-id picom --config ~/.config/picom/picom.conf
