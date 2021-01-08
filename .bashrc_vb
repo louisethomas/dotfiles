@@ -37,7 +37,7 @@ POWERLINE_BASH_SELECT=1
 
 # arduino-cli shortcuts
 alias compile='arduino-cli compile -b arduino:avr:nano:cpu=atmega328old'
-alias upload='arduino-cli upload -p /dev/ttyUSB0 -b arduino:avr:nano:cpu=atmega328old'
+alias upload='arduino-cli upload -p /dev/ttyS3 -b arduino:avr:nano:cpu=atmega328old'
 
 # pi ssh shortcuts
 alias pumpi='ssh pi@10.147.20.141'
@@ -61,3 +61,5 @@ alias 汉字="python /mnt/c/Users/louise/Documents/scripts/chinese-character-sea
 # alias for deleting swap files
 alias rmswap='rm ~/.cache/vim/swap/*'
 
+# alias for mounting drives
+alias mount_deepenvy='sudo mount //192.168.1.160/deepenvy /mnt/deepenvy'
