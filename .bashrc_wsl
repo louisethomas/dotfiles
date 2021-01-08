@@ -47,6 +47,7 @@ alias upload='arduino-cli upload -p /dev/ttyUSB0 -b arduino:avr:nano:cpu=atmega3
 # pi ssh shortcuts
 alias pumpi='ssh pi@10.147.20.141'
 alias canolapi='ssh pi@10.147.20.170'
+alias tensorpi='ssh pi@10.147.20.12'
 
 # shortcut for Documents directory
 alias documents='cd /mnt/c/Users/louise/Documents'
