@@ -4,10 +4,6 @@ arduino-cli
 autoconf
 automake
 base
-<<<<<<< HEAD
-cmake
-diffutils
-=======
 binutils
 bison
 chromium
@@ -16,49 +12,37 @@ cmake
 cronie
 dmenu
 efibootmgr
->>>>>>> c8fe3563233984d97e504e27c59364f9a0fdb017
 emacs
 expac
-fakeroot-tcp
+fakeroot
 feh
-ffmpeg
 flex
 fzf
 gcc
 gcc-fortran
-gettext
 git
-<<<<<<< HEAD
-go
-grep
-gzip
-=======
 google-cloud-sdk
 groff
 grub
->>>>>>> c8fe3563233984d97e504e27c59364f9a0fdb017
 htop
-<<<<<<< HEAD
-=======
 i3-gaps
 i3status
 ibus-libpinyin
->>>>>>> 5ed0d1e79af5e325e0faa9a07b38183a8349f566
 inetutils
-iproute2
-iputils
+infocmp-nohex
+kitty
 lapack
-less
+libtool
+linux
+linux-firmware
+linux-headers
+m4
 make
-man-db
 man-pages
 mpv
-<<<<<<< HEAD
-=======
 net-tools
 networkmanager
 nfs-utils
->>>>>>> c8fe3563233984d97e504e27c59364f9a0fdb017
 nmap
 nomacs
 noto-fonts
@@ -84,26 +68,27 @@ python-pyqt5
 python-pyserial
 python-scipy
 ranger
-rxvt-unicode
-sed
-spacemacs
+reflector
 sshfs
 sudo
-systemd
-tar
+termite
+texinfo
 tk
 tmux
-unzip
 vi
 vim
+virtualbox-guest-utils
 w3m
 wget
 which
+xorg-server
+xorg-xauth
 xorg-xclock
+xorg-xinit
+xorg-xmodmap
+xorg-xprop
+xorg-xrdb
+xorg-xset
 yay
 youtube-dl
-<<<<<<< HEAD
-zip
-=======
 zerotier-one
->>>>>>> c8fe3563233984d97e504e27c59364f9a0fdb017
