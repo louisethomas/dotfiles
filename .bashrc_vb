@@ -11,6 +11,9 @@
 # start X server
 [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx
 
+# export scripts folder to path
+export PATH="$HOME/.scripts:$PATH"
+
 alias ls='ls --color=auto'
 alias dir='dir --color=auto'
 
@@ -37,7 +40,8 @@ POWERLINE_BASH_SELECT=1
 
 # arduino-cli shortcuts
 alias compile='arduino-cli compile -b arduino:avr:nano:cpu=atmega328old'
-alias upload='arduino-cli upload -p /dev/ttyS3 -b arduino:avr:nano:cpu=atmega328old'
+alias upload1='arduino-cli upload -p /dev/serial/by-path/pci-0000:00:06.0-usb-0:2:1.0-port0 -b arduino:avr:nano:cpu=atmega328old'
+alias upload2='arduino-cli upload -p /dev/serial/by-path/pci-0000:00:06.0-usb-0:3:1.0-port0 -b arduino:avr:nano:cpu=atmega328old'
 
 # pi ssh shortcuts
 alias pumpi='ssh pi@10.147.20.141'
