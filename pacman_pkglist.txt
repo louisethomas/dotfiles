@@ -11,6 +11,7 @@ cloud-sql-proxy-git
 cmake
 cronie
 dmenu
+docker
 efibootmgr
 emacs
 expac
@@ -20,7 +21,10 @@ flex
 fzf
 gcc
 gcc-fortran
+gcsfuse
+gdrivefs
 git
+git-filter-repo
 google-cloud-sdk
 groff
 grub
@@ -30,6 +34,7 @@ i3status
 ibus-libpinyin
 inetutils
 infocmp-nohex
+jupyterlab
 kitty
 lapack
 libtool
@@ -39,10 +44,12 @@ linux-headers
 m4
 make
 man-pages
+meson
 mpv
 net-tools
 networkmanager
 nfs-utils
+ninja
 nmap
 nomacs
 noto-fonts
@@ -50,13 +57,16 @@ noto-fonts-sc
 npm
 openssh
 p7zip
+parted
 patch
 picom
 pkgconf
 postgresql
+postgresql-old-upgrade
 powerline
 powerline-fonts
 pyenv
+python-crcmod
 python-matplotlib
 python-numpy
 python-pandas
@@ -67,8 +77,10 @@ python-psycopg2
 python-pyqt5
 python-pyserial
 python-scipy
+python-seaborn
 ranger
 reflector
+rsync
 sshfs
 sudo
 termite
