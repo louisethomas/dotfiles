@@ -59,8 +59,9 @@ autocmd InsertLeave * highlight  CursorLine ctermbg=None ctermfg=None
 let $PYTHONUNBUFFERED = 1
 let g:asyncrun_open = 10
 
-" close auto-complete window 
+" YouCompleteMe settings
 let g:ycm_autoclose_preview_window_after_completion=1
+let g:ycm_global_ycm_extra_conf = "~/.vim/bundle/.ycm_extra_conf.py"
 
 " Enable folding
 set foldmethod=indent
