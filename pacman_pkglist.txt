@@ -12,6 +12,7 @@ cmake
 cronie
 dmenu
 docker
+dosfstools
 efibootmgr
 emacs
 expac
@@ -25,6 +26,7 @@ gcsfuse
 gdrivefs
 git
 git-filter-repo
+google-chrome
 google-cloud-sdk
 groff
 grub
@@ -44,12 +46,10 @@ linux-headers
 m4
 make
 man-pages
-meson
 mpv
 net-tools
 networkmanager
 nfs-utils
-ninja
 nmap
 nomacs
 noto-fonts
