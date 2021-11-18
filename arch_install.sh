@@ -14,7 +14,7 @@
 # - partition disks as required
 # - ensure network interface is enabled using `ip link`
 # - Connect to wifi via: `# iwctl station wlan0 connect WIFI-NETWORK`
-# - Run: `# bash <(curl -sL https://git.io/maximbaz-install)`
+# - Run: `# bash <(curl -sL https://github.com/louisethomas/dotfiles/edit/master/arch_install.sh)`
 
 printf '\033c'
 echo "Welcome to Arch Linux Installation"
@@ -29,13 +29,11 @@ if [ ! -f /sys/firmware/efi/fw_platform_size ]; then
     exit 2
 fi
 
-echo -e "\n### Formatting drives"
+cf
 lsblk
-echo "Enter the drive: "
-read drive
+read -p "Enter the drive: " drive
 cfdisk $drive 
-echo "Enter the linux partition: "
-read partition
+read -p "Enter the linux partition: " partition
 mkfs.ext4 $partition 
 
 read -p "Did you also create a swap partition? [y/n]" swapanswer
@@ -79,7 +77,6 @@ exit
 
 ### Part 2
 printf '\033c'
-
 echo -e "\n### Setting up clock"
 ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
 hwclock --systohc
@@ -101,64 +98,71 @@ passwd
 echo -e "\n### Setting up bootloader"
 pacman --noconfirm -S refind
 refind-install
-
+root_partuuid=$(lsblk -dno PARTUUID $partition)
+echo '"Boot using default options" "root=PARTUUID=$root_partuuid rw add_efi_memmap initrd=boot\intel-ucode.img initrd=boot\initramfs-linux.img"' > /boot/refind_linux.conf
 read -p "Did you want to create a Pacman hook for rEFInd? [y/n]" hookanswer
 if [[ $hookanswer = y ]] ; then
-  echo "Enter SWAP partition: "
-  read swappartition
-  mkswap $swappartition
+  echo "[Trigger]" > /etc/pacman.d/hooks/refind.hook
+  echo "Operation=Upgrade" >> /etc/pacman.d/hooks/refind.hook
+  echo "Type=Package" >> /etc/pacman.d/hooks/refind.hook
+  echo "Target=refind" >> /etc/pacman.d/hooks/refind.hook
+  echo "\n[Action]" >> /etc/pacman.d/hooks/refind.hook
+  echo "Description = Updating rEFInd on ESP" >> /etc/pacman.d/hooks/refind.hook
+  echo "When=PostTransaction" >> /etc/pacman.d/hooks/refind.hook
+  echo "Exec=/usr/bin/refind-install" >> /etc/pacman.d/hooks/refind.hook
 fi
+
+echo -e "\n### Creating user"
+read -p "Enter Username: " username
+useradd -mG wheel $username
+passwd $username
+echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
 pacman -S --noconfirm sed
 
-pacman -S --noconfirm xorg-server xorg-xinit xorg-xkill xorg-xsetroot xorg-xbacklight xorg-xprop \
-     noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-jetbrains-mono ttf-joypixels ttf-font-awesome \
-     sxiv mpv zathura zathura-pdf-mupdf ffmpeg imagemagick  \
-     fzf man-db xwallpaper python-pywal youtube-dl unclutter xclip maim \
-     zip unzip unrar p7zip xdotool papirus-icon-theme brightnessctl  \
-     dosfstools ntfs-3g git sxhkd zsh pipewire pipewire-pulse \
-     vim emacs arc-gtk-theme rsync firefox dash \
-     xcompmgr libnotify dunst slock jq \
-     dhcpcd networkmanager rsync pamixer
+#pacman -S --noconfirm xorg-server xorg-xinit xorg-xkill xorg-xsetroot xorg-xbacklight xorg-xprop \
+#     noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-font-awesome \
+#     sxiv mpv zathura zathura-pdf-mupdf ffmpeg imagemagick  \
+#     fzf man-db xwallpaper python-pywal youtube-dl unclutter xclip maim \
+#     zip unzip unrar p7zip xdotool papirus-icon-theme brightnessctl  \
+#     dosfstools ntfs-3g git sxhkd zsh pipewire pipewire-pulse \
+#     vim emacs arc-gtk-theme rsync firefox dash \
+#     xcompmgr libnotify dunst slock jq \
+#     dhcpcd networkmanager rsync pamixer
 
-systemctl enable NetworkManager.service 
-rm /bin/sh
-ln -s dash /bin/sh
-echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-echo "Enter Username: "
-read username
-useradd -m -G wheel -s /bin/zsh $username
-passwd $username
+#systemctl enable NetworkManager.service 
+
 echo "Pre-Installation Finish Reboot now"
 ai3_path=/home/$username/arch_install3.sh
-sed '1,/^#part3$/d' arch_install2.sh > $ai3_path
+sed '1,/^###\ Part\ 3$/d' arch_install2.sh > $ai3_path
 chown $username:$username $ai3_path
 chmod +x $ai3_path
 su -c $ai3_path -s /bin/sh $username
 exit 
 
-#part3
-printf '\033c'
-cd $HOME
-git clone --separate-git-dir=$HOME/.dotfiles https://github.com/bugswriter/dotfiles.git tmpdotfiles
-rsync --recursive --verbose --exclude '.git' tmpdotfiles/ $HOME/
-rm -r tmpdotfiles
-git clone --depth=1 https://github.com/Bugswriter/dwm.git ~/.local/src/dwm
-sudo make -C ~/.local/src/dwm install
-git clone --depth=1 https://github.com/Bugswriter/st.git ~/.local/src/st
-sudo make -C ~/.local/src/st install
-git clone --depth=1 https://github.com/Bugswriter/dmenu.git ~/.local/src/dmenu
-sudo make -C ~/.local/src/dmenu install
-git clone --depth=1 https://github.com/Bugswriter/baph.git ~/.local/src/baph
-sudo make -C ~/.local/src/baph install
-baph -inN libxft-bgra-git
 
-ln -s ~/.config/x11/xinitrc .xinitrc
-ln -s ~/.config/shell/profile .zprofile
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-mv ~/.oh-my-zsh ~/.config/zsh/oh-my-zsh
-rm ~/.zshrc ~/.zsh_history
-mkdir -p ~/dl ~/vids ~/music ~/dox ~/code ~/pix/ss
-alias dots='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-dots config --local status.showUntrackedFiles no
-exit
+### Part 3
+#printf '\033c'
+#cd $HOME
+#git clone --separate-git-dir=$HOME/.dotfiles https://github.com/bugswriter/dotfiles.git tmpdotfiles
+#rsync --recursive --verbose --exclude '.git' tmpdotfiles/ $HOME/
+#rm -r tmpdotfiles
+#git clone --depth=1 https://github.com/Bugswriter/dwm.git ~/.local/src/dwm
+#sudo make -C ~/.local/src/dwm install
+#git clone --depth=1 https://github.com/Bugswriter/st.git ~/.local/src/st
+#sudo make -C ~/.local/src/st install
+#git clone --depth=1 https://github.com/Bugswriter/dmenu.git ~/.local/src/dmenu
+#sudo make -C ~/.local/src/dmenu install
+#git clone --depth=1 https://github.com/Bugswriter/baph.git ~/.local/src/baph
+#sudo make -C ~/.local/src/baph install
+#baph -inN libxft-bgra-git
+
+#ln -s ~/.config/x11/xinitrc .xinitrc
+#ln -s ~/.config/shell/profile .zprofile
+#sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+#mv ~/.oh-my-zsh ~/.config/zsh/oh-my-zsh
+#rm ~/.zshrc ~/.zsh_history
+#mkdir -p ~/dl ~/vids ~/music ~/dox ~/code ~/pix/ss
+#alias dots='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+#dots config --local status.showUntrackedFiles no
+#exit
