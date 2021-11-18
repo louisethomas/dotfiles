@@ -14,10 +14,10 @@
 # - partition disks as required
 # - ensure network interface is enabled using `ip link`
 # - Connect to wifi via: `# iwctl station wlan0 connect WIFI-NETWORK`
-# - Run: `# bash <(curl -sL https://github.com/louisethomas/dotfiles/edit/master/arch_install.sh)`
+# - Run: `# bash <(curl -sL https://git.io/louise-arch-install)`
 
 printf '\033c'
-echo "Welcome to Arch Linux Installation"
+echo "Welcome tcurl o Arch Linux Installation"
 
 pacman --noconfirm -Sy archlinux-keyring
 loadkeys us
@@ -31,9 +31,9 @@ fi
 
 cf
 lsblk
-read -p "Enter the drive: " drive
-cfdisk $drive 
-read -p "Enter the linux partition: " partition
+read -p "Enter the drive (e.g. /dev/sda): " drive
+cfdisk $drive c
+read -p "Enter the linux root partition (/dev/sda3): " partition
 mkfs.ext4 $partition 
 
 read -p "Did you also create a swap partition? [y/n]" swapanswer
@@ -69,7 +69,7 @@ pacstrap /mnt base base-devel linux linux-firmware
 
 echo -e "\n### Configuring the system"
 genfstab -U /mnt >> /mnt/etc/fstab
-sed '1,/^###\ Part\ 2$/d' arch_install.sh > /mnt/arch_install2.sh
+sed '1,/^###\ Part\ 2$/d' louise-arch-install > /mnt/arch_install2.sh
 chmod +x /mnt/arch_install2.sh
 arch-chroot /mnt ./arch_install2.sh
 exit 
