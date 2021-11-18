@@ -17,7 +17,7 @@
 # - Run: `# bash <(curl -sL https://git.io/louise-arch-install)`
 
 printf '\033c'
-echo "Welcome tcurl o Arch Linux Installation"
+echo "Welcome to Arch Linux Installation"
 
 pacman --noconfirm -Sy archlinux-keyring
 loadkeys us
@@ -29,10 +29,9 @@ if [ ! -f /sys/firmware/efi/fw_platform_size ]; then
     exit 2
 fi
 
-cf
 lsblk
 read -p "Enter the drive (e.g. /dev/sda): " drive
-cfdisk $drive c
+cfdisk $drive
 read -p "Enter the linux root partition (/dev/sda3): " partition
 mkfs.ext4 $partition 
 
