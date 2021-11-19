@@ -34,19 +34,19 @@ cfdisk $drive
 read -p "Enter the linux root partition (/dev/sda3): " partition
 mkfs.ext4 $partition 
 
+lsblk
+read -p "Did you also create efi partition? [y/n]" efianswer
+if [[ $efianswer = y ]] ; then
+  read -p "Enter EFI partition (e.g. /dev/sda1): " efipartition
+  mkfs.vfat -F 32 $efipartition
+fi
+
 read -p "Did you also create a swap partition? [y/n]" swapanswer
 if [[ $swapanswer = y ]] ; then
-  echo "Enter SWAP partition: "
-  read swappartition
+  read -p "Enter SWAP partition (e.g. /dev/sda2): " swappartition
   mkswap $swappartition
 fi
 
-read -p "Did you also create efi partition? [y/n]" efianswer
-if [[ $efianswer = y ]] ; then
-  echo "Enter EFI partition: "
-  read efipartition
-  mkfs.vfat -F 32 $efipartition
-fi
 
 echo -e "\n### Mounting file system"
 mount $partition /mnt 
@@ -85,12 +85,13 @@ locale-gen
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 echo "KEYMAP=us" > /etc/vconsole.conf
 
-echo "Enter hostname: "
-read hostname
+echo -e "\n### Setting computer hostname"
+read -p "Enter hostname: " hostname
 echo $hostname > /etc/hostname
 echo "127.0.0.1       localhost" >> /etc/hosts
 echo "::1             localhost" >> /etc/hosts
 echo "127.0.1.1       $hostname" >> /etc/hosts
+echo "Creating root password"
 passwd
 
 echo -e "\n### Setting up bootloader"
@@ -106,7 +107,7 @@ if [[ $hookanswer = y ]] ; then
   echo "Operation=Upgrade" >> /etc/pacman.d/hooks/refind.hook
   echo "Type=Package" >> /etc/pacman.d/hooks/refind.hook
   echo "Target=refind" >> /etc/pacman.d/hooks/refind.hook
-  echo "\n[Action]" >> /etc/pacman.d/hooks/refind.hook
+  echo -e "\n[Action]" >> /etc/pacman.d/hooks/refind.hook
   echo "Description = Updating rEFInd on ESP" >> /etc/pacman.d/hooks/refind.hook
   echo "When=PostTransaction" >> /etc/pacman.d/hooks/refind.hook
   echo "Exec=/usr/bin/refind-install" >> /etc/pacman.d/hooks/refind.hook
@@ -140,7 +141,7 @@ yay -S --noconfirm sway sway-launcher-desktop waybar \
 
 #systemctl enable NetworkManager.service 
 
-echo "Pre-Installation Finish Reboot now"
+echo -e "\n### Pre-Installation Finished"
 ai3_path=/home/$username/arch_install3.sh
 sed '1,/^###\ Part\ 3$/d' arch_install2.sh > $ai3_path
 rm arch_install2.sh
@@ -151,7 +152,7 @@ exit
 
 
 ### Part 3
-printf '\033c'
+#printf '\033c'
 #cd $HOME
 #git clone --separate-git-dir=$HOME/.dotfiles https://github.com/bugswriter/dotfiles.git tmpdotfiles
 #rsync --recursive --verbose --exclude '.git' tmpdotfiles/ $HOME/
