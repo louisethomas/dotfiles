@@ -97,9 +97,8 @@ passwd
 echo -e "\n### Setting up bootloader"
 pacman --noconfirm -S refind
 refind-install
-root_partuuid=$(lsblk -dno PARTUUID $partition)
-echo "\"Boot using default options\" \"root=PARTUUID=$root_partuuid rw add_efi_memmap initrd=boot\intel-ucode.img initrd=boot\initramfs-linux.img\"" > /boot/refind_linux.conf
-read -p "Did you want to create a Pacman hook for rEFInd? [y/n]" hookanswer
+echo "\"Boot using default options\" \"root=PARTUUID=$(lsblk -dno PARTUUID $partition) rw add_efi_memmap initrd=boot\intel-ucode.img initrd=boot\initramfs-linux.img\"" > /boot/refind_linux.conf
+read -p "Did you want to create a Pacman hook for rEFInd? [y/n] " hookanswer
 if [[ $hookanswer = y ]] ; then
   mkdir -p /etc/pacman.d/hooks
   touch /etc/pacman.d/hooks/refind.hook
@@ -124,7 +123,7 @@ pacman -S --noconfirm git vim sed
 
 read -p "Set up reflector service to update mirrorlist? [y/n] " reflectoranswer
 if [[ $reflectoranswer = y ]] ; then
-  pacman -S --noconfirm reflector 
+  sudo pacman -S --noconfirm reflector 
   echo "--country United States" >> /etc/xdg/reflector/reflector.conf
   echo "--download-timeout 5" >> /etc/xdg/reflector/reflector.conf
   systemctl enable --now reflector.service
@@ -133,8 +132,6 @@ fi
 echo -e "\n### Setting up networking"
 pacman -S --noconfirm iwd
 systemctl enable --now systemd-resolved.service systemd-networkd.service iwd.service
-
-
 #systemctl enable NetworkManager.service 
 
 echo -e "\n### Pre-Installation Finished"
@@ -150,24 +147,25 @@ exit
 ### Part 3
 #printf '\033c'
 echo -e "\n### Configuring user environment"
+cd $HOME
 echo -e "\n### Setting up yay package manager"
 git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si
 
 echo -e "\n### Installing packages"
-yay -S --noconfirm sway sway-launcher-desktop waybar \
-    vim emacs 
-    noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-font-awesome \
-#     sxiv mpv zathura zathura-pdf-mupdf ffmpeg imagemagick  \
-#     fzf man-db xwallpaper python-pywal youtube-dl unclutter xclip maim \
-#     zip unzip unrar p7zip xdotool papirus-icon-theme brightnessctl  \
-#     dosfstools ntfs-3g git sxhkd zsh pipewire pipewire-pulse \
-#     vim emacs arc-gtk-theme rsync firefox dash \
-#     xcompmgr libnotify dunst slock jq \
-#     dhcpcd networkmanager rsync pamixer
+yay -S --noconfirm vim emacs google-chrome \
+    sway sway-launcher-desktop waybar wl-clip mako \
+    noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-font-awesome papirus-icon-theme\
+    imv mpv zathura zathura-pdf-mupdf ffmpeg imagemagick  \
+    man-db man-pages texinfo \
+    fzf sed rsync youtube-dl unclutter htop \
+    
+#     zip unzip unrar p7zip  brightnessctl  \
+#     git fish \
+#     dhcpcd networkmanager pamixer
 
-#cd $HOME
+
 #git clone --separate-git-dir=$HOME/.dotfiles https://github.com/bugswriter/dotfiles.git tmpdotfiles
 #rsync --recursive --verbose --exclude '.git' tmpdotfiles/ $HOME/
 #rm -r tmpdotfiles
