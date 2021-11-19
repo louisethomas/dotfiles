@@ -35,13 +35,13 @@ read -p "Enter the linux root partition (/dev/sda3): " partition
 mkfs.ext4 $partition 
 
 lsblk
-read -p "Did you also create efi partition? [y/n]" efianswer
+read -p "Did you also create efi partition? [y/n] " efianswer
 if [[ $efianswer = y ]] ; then
   read -p "Enter EFI partition (e.g. /dev/sda1): " efipartition
   mkfs.vfat -F 32 $efipartition
 fi
 
-read -p "Did you also create a swap partition? [y/n]" swapanswer
+read -p "Did you also create a swap partition? [y/n] " swapanswer
 if [[ $swapanswer = y ]] ; then
   read -p "Enter SWAP partition (e.g. /dev/sda2): " swappartition
   mkswap $swappartition
@@ -58,7 +58,7 @@ if [[ $swapanswer = y ]] ; then
   swapon $swappartition
 fi
 
-read -p "Do you want to automatically select the fastest mirrors? [y/n]" answer
+read -p "Do you want to automatically select the fastest mirrors? [y/n] " answer
 if [[ $answer = y ]] ; then
   echo "Selecting the fastest mirrors"
   reflector --latest 20 --sort rate --save /etc/pacman.d/mirrorlist --protocol https --download-timeout 5
@@ -91,7 +91,7 @@ echo $hostname > /etc/hostname
 echo "127.0.0.1       localhost" >> /etc/hosts
 echo "::1             localhost" >> /etc/hosts
 echo "127.0.1.1       $hostname" >> /etc/hosts
-echo "Creating root password"
+echo -e "\n### Creating root password"
 passwd
 
 echo -e "\n### Setting up bootloader"
@@ -119,25 +119,21 @@ useradd -mG wheel $username
 passwd $username
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
+echo -e "\n### Installing essential packages"
+pacman -S --noconfirm git vim sed
 
-echo -e "\n### Setting up yay package manager"
-pacman -S --noconfirm git
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si
+read -p "Set up reflector service to update mirrorlist? [y/n] " reflectoranswer
+if [[ $reflectoranswer = y ]] ; then
+  pacman -S --noconfirm reflector 
+  echo "--country United States" >> /etc/xdg/reflector/reflector.conf
+  echo "--download-timeout 5" >> /etc/xdg/reflector/reflector.conf
+  systemctl enable --now reflector.service
+fi
 
-echo -e "\n### Installing packages"
-pacman -S --noconfirm sed
-yay -S --noconfirm sway sway-launcher-desktop waybar \
-    vim emacs 
-#    noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-font-awesome \
-#     sxiv mpv zathura zathura-pdf-mupdf ffmpeg imagemagick  \
-#     fzf man-db xwallpaper python-pywal youtube-dl unclutter xclip maim \
-#     zip unzip unrar p7zip xdotool papirus-icon-theme brightnessctl  \
-#     dosfstools ntfs-3g git sxhkd zsh pipewire pipewire-pulse \
-#     vim emacs arc-gtk-theme rsync firefox dash \
-#     xcompmgr libnotify dunst slock jq \
-#     dhcpcd networkmanager rsync pamixer
+echo -e "\n### Setting up networking"
+pacman -S --noconfirm iwd
+systemctl enable --now systemd-resolved.service systemd-networkd.service iwd.service
+
 
 #systemctl enable NetworkManager.service 
 
@@ -153,6 +149,24 @@ exit
 
 ### Part 3
 #printf '\033c'
+echo -e "\n### Configuring user environment"
+echo -e "\n### Setting up yay package manager"
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+
+echo -e "\n### Installing packages"
+yay -S --noconfirm sway sway-launcher-desktop waybar \
+    vim emacs 
+    noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-font-awesome \
+#     sxiv mpv zathura zathura-pdf-mupdf ffmpeg imagemagick  \
+#     fzf man-db xwallpaper python-pywal youtube-dl unclutter xclip maim \
+#     zip unzip unrar p7zip xdotool papirus-icon-theme brightnessctl  \
+#     dosfstools ntfs-3g git sxhkd zsh pipewire pipewire-pulse \
+#     vim emacs arc-gtk-theme rsync firefox dash \
+#     xcompmgr libnotify dunst slock jq \
+#     dhcpcd networkmanager rsync pamixer
+
 #cd $HOME
 #git clone --separate-git-dir=$HOME/.dotfiles https://github.com/bugswriter/dotfiles.git tmpdotfiles
 #rsync --recursive --verbose --exclude '.git' tmpdotfiles/ $HOME/
