@@ -28,34 +28,37 @@ if [ ! -f /sys/firmware/efi/fw_platform_size ]; then
     exit 2
 fi
 
-lsblk
-read -p "Enter the drive (e.g. /dev/sda): " drive
-cfdisk $drive
-read -p "Enter the linux root partition (/dev/sda3): " partition
-mkfs.ext4 $partition 
+read -p "Format disks? [y/n] " formatanswer
+if [[ $formatanswer = y ]] ; then
+    lsblk
+    read -p "Enter the drive (e.g. /dev/sda): " drive
+    cfdisk $drive
+    read -p "Enter the linux root partition (/dev/sda3): " partition
+    mkfs.ext4 $partition 
 
-lsblk
-read -p "Did you also create efi partition? [y/n] " efianswer
-if [[ $efianswer = y ]] ; then
-  read -p "Enter EFI partition (e.g. /dev/sda1): " efipartition
-  mkfs.vfat -F 32 $efipartition
-fi
+    fdisk -l $drive
+    read -p "Did you also create efi partition? [y/n] " efianswer
+    if [[ $efianswer = y ]] ; then
+      read -p "Enter EFI partition (e.g. /dev/sda1): " efipartition
+      mkfs.vfat -F 32 $efipartition
+    fi
 
-read -p "Did you also create a swap partition? [y/n] " swapanswer
-if [[ $swapanswer = y ]] ; then
-  read -p "Enter SWAP partition (e.g. /dev/sda2): " swappartition
-  mkswap $swappartition
-fi
+    read -p "Did you also create a swap partition? [y/n] " swapanswer
+    if [[ $swapanswer = y ]] ; then
+      read -p "Enter SWAP partition (e.g. /dev/sda2): " swappartition
+      mkswap $swappartition
+    fi
 
 
-echo -e "\n### Mounting file system"
-mount $partition /mnt 
-if [[ $efianswer = y ]] ; then
-  mkdir -p /mnt/boot/efi
-  mount $efipartition /mnt/boot/efi
-fi
-if [[ $swapanswer = y ]] ; then
-  swapon $swappartition
+    echo -e "\n### Mounting file system"
+    mount $partition /mnt 
+    if [[ $efianswer = y ]] ; then
+      mkdir -p /mnt/boot/efi
+      mount $efipartition /mnt/boot/efi
+    fi
+    if [[ $swapanswer = y ]] ; then
+      swapon $swappartition
+    fi
 fi
 
 read -p "Do you want to automatically select the fastest mirrors? [y/n] " answer
@@ -65,7 +68,7 @@ if [[ $answer = y ]] ; then
 fi
 pacstrap /mnt base base-devel linux linux-firmware
 
-echo -e "\n### Configuring the system"
+echo -e "\n### Generating fstab"
 genfstab -U /mnt >> /mnt/etc/fstab
 sed '1,/^###\ Part\ 2$/d' louise-arch-install > /mnt/arch_install2.sh
 chmod +x /mnt/arch_install2.sh
@@ -130,7 +133,7 @@ if [[ $reflectoranswer = y ]] ; then
 fi
 
 echo -e "\n### Setting up networking"
-pacman -S --noconfirm iwd
+pacman -S --noconfirm iwd openssh
 systemctl enable --now systemd-resolved.service systemd-networkd.service iwd.service
 #systemctl enable NetworkManager.service 
 
@@ -160,10 +163,12 @@ yay -S --noconfirm vim emacs google-chrome \
     imv mpv zathura zathura-pdf-mupdf ffmpeg imagemagick  \
     man-db man-pages texinfo \
     fzf sed rsync youtube-dl unclutter htop \
+    xf86-video-nouveau \
+    greetd gtkgreet \
     
 #     zip unzip unrar p7zip  brightnessctl  \
 #     git fish \
-#     dhcpcd networkmanager pamixer
+#     pamixer
 
 
 #git clone --separate-git-dir=$HOME/.dotfiles https://github.com/bugswriter/dotfiles.git tmpdotfiles
