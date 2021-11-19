@@ -11,15 +11,14 @@
 
 ### Part 1
 # From live environment: 
-# - partition disks as required
 # - ensure network interface is enabled using `ip link`
 # - Connect to wifi via: `# iwctl station wlan0 connect WIFI-NETWORK`
-# - Run: `# bash <(curl -sL https://git.io/louise-arch-install)`
+# - Downlaod: `# curl -OsL https://git.io/louise-arch-install)`
+# - Check, then run: `# bash louise-arch-install`
 
 printf '\033c'
 echo "Welcome to Arch Linux Installation"
 
-pacman --noconfirm -Sy archlinux-keyring
 loadkeys us
 timedatectl set-ntp true
 
@@ -86,7 +85,7 @@ locale-gen
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 echo "KEYMAP=us" > /etc/vconsole.conf
 
-echo "Hostname: "
+echo "Enter hostname: "
 read hostname
 echo $hostname > /etc/hostname
 echo "127.0.0.1       localhost" >> /etc/hosts
@@ -98,9 +97,11 @@ echo -e "\n### Setting up bootloader"
 pacman --noconfirm -S refind
 refind-install
 root_partuuid=$(lsblk -dno PARTUUID $partition)
-echo '"Boot using default options" "root=PARTUUID=$root_partuuid rw add_efi_memmap initrd=boot\intel-ucode.img initrd=boot\initramfs-linux.img"' > /boot/refind_linux.conf
+echo "\"Boot using default options\" \"root=PARTUUID=$root_partuuid rw add_efi_memmap initrd=boot\intel-ucode.img initrd=boot\initramfs-linux.img\"" > /boot/refind_linux.conf
 read -p "Did you want to create a Pacman hook for rEFInd? [y/n]" hookanswer
 if [[ $hookanswer = y ]] ; then
+  mkdir -p /etc/pacman.d/hooks
+  touch /etc/pacman.d/hooks/refind.hook
   echo "[Trigger]" > /etc/pacman.d/hooks/refind.hook
   echo "Operation=Upgrade" >> /etc/pacman.d/hooks/refind.hook
   echo "Type=Package" >> /etc/pacman.d/hooks/refind.hook
@@ -117,10 +118,18 @@ useradd -mG wheel $username
 passwd $username
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
-pacman -S --noconfirm sed
 
-#pacman -S --noconfirm xorg-server xorg-xinit xorg-xkill xorg-xsetroot xorg-xbacklight xorg-xprop \
-#     noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-font-awesome \
+echo -e "\n### Setting up yay package manager"
+pacman -S --noconfirm git
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+
+echo -e "\n### Installing packages"
+pacman -S --noconfirm sed
+yay -S --noconfirm sway sway-launcher-desktop waybar \
+    vim emacs 
+#    noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-font-awesome \
 #     sxiv mpv zathura zathura-pdf-mupdf ffmpeg imagemagick  \
 #     fzf man-db xwallpaper python-pywal youtube-dl unclutter xclip maim \
 #     zip unzip unrar p7zip xdotool papirus-icon-theme brightnessctl  \
@@ -134,6 +143,7 @@ pacman -S --noconfirm sed
 echo "Pre-Installation Finish Reboot now"
 ai3_path=/home/$username/arch_install3.sh
 sed '1,/^###\ Part\ 3$/d' arch_install2.sh > $ai3_path
+rm arch_install2.sh
 chown $username:$username $ai3_path
 chmod +x $ai3_path
 su -c $ai3_path -s /bin/sh $username
@@ -141,7 +151,7 @@ exit
 
 
 ### Part 3
-#printf '\033c'
+printf '\033c'
 #cd $HOME
 #git clone --separate-git-dir=$HOME/.dotfiles https://github.com/bugswriter/dotfiles.git tmpdotfiles
 #rsync --recursive --verbose --exclude '.git' tmpdotfiles/ $HOME/
