@@ -66,7 +66,7 @@ if [[ $answer = y ]] ; then
   echo "Selecting the fastest mirrors"
   reflector --latest 20 --sort rate --save /etc/pacman.d/mirrorlist --protocol https --download-timeout 5
 fi
-pacstrap /mnt base base-devel linux linux-firmware
+pacstrap /mnt base base-devel linux linux-firmware linux-headers intel-ucode
 
 echo -e "\n### Generating fstab"
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -121,19 +121,16 @@ useradd -mG wheel $username
 passwd $username
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
-echo -e "\n### Installing essential packages"
-pacman -S --noconfirm git vim sed
-
 read -p "Set up reflector service to update mirrorlist? [y/n] " reflectoranswer
 if [[ $reflectoranswer = y ]] ; then
-  sudo pacman -S --noconfirm reflector 
+  pacman -S --noconfirm reflector 
   echo "--country United States" >> /etc/xdg/reflector/reflector.conf
   echo "--download-timeout 5" >> /etc/xdg/reflector/reflector.conf
   systemctl enable --now reflector.service
 fi
 
 echo -e "\n### Setting up networking"
-pacman -S --noconfirm iwd openssh
+pacman -S --noconfirm iwd 
 systemctl enable --now systemd-resolved.service systemd-networkd.service iwd.service
 #systemctl enable NetworkManager.service 
 
@@ -148,41 +145,38 @@ exit
 
 
 ### Part 3
-#printf '\033c'
+printf '\033c'
 echo -e "\n### Configuring user environment"
 cd $HOME
 echo -e "\n### Setting up yay package manager"
+sudo pacman -S --noconfirm git 
 git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si
 
 echo -e "\n### Installing packages"
-yay -S --noconfirm vim emacs google-chrome \
-    sway sway-launcher-desktop waybar wl-clip mako \
-    noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-font-awesome papirus-icon-theme\
+yay -S --noconfirm vim emacs \
+    sway sway-launcher-desktop swayidle swaylock waybar wl-clip mako wev \
+    xf86-video-nouveau qt5-wayland xorg-xwayland \
+    greetd greetd-gtkgreet \
+    noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-font-awesome papirus-icon-theme \
+    fcitx5 fcitx5-chinese-addons emote \
     imv mpv zathura zathura-pdf-mupdf ffmpeg imagemagick  \
-    man-db man-pages texinfo \
-    fzf sed rsync youtube-dl unclutter htop \
-    xf86-video-nouveau \
-    greetd gtkgreet \
-    
-#     zip unzip unrar p7zip  brightnessctl  \
-#     git fish \
-#     pamixer
+    man-db man-pages \
+    fzf fd rsync wget2 youtube-dl unclutter htop openssh usbutils \
+    zip unzip unrar p7zip \
+    python-pyserial arduino-cli ch34x-dkms-git \
+    cups cups-pdf grimshot swappy \
+    bluez bluez-utils brightnessctl \
+    pulseaudio pulseaudio-alsa pulseaudio-modules-bt pavucontrol pulsemixer \
+    alacritty fish zoxide \
+    spotify ferdi-bin google-chrome anki
 
 
 #git clone --separate-git-dir=$HOME/.dotfiles https://github.com/bugswriter/dotfiles.git tmpdotfiles
 #rsync --recursive --verbose --exclude '.git' tmpdotfiles/ $HOME/
 #rm -r tmpdotfiles
-#git clone --depth=1 https://github.com/Bugswriter/dwm.git ~/.local/src/dwm
-#sudo make -C ~/.local/src/dwm install
-#git clone --depth=1 https://github.com/Bugswriter/st.git ~/.local/src/st
-#sudo make -C ~/.local/src/st install
-#git clone --depth=1 https://github.com/Bugswriter/dmenu.git ~/.local/src/dmenu
-#sudo make -C ~/.local/src/dmenu install
-#git clone --depth=1 https://github.com/Bugswriter/baph.git ~/.local/src/baph
-#sudo make -C ~/.local/src/baph install
-#baph -inN libxft-bgra-git
+
 
 #ln -s ~/.config/x11/xinitrc .xinitrc
 #ln -s ~/.config/shell/profile .zprofile
