@@ -28,7 +28,8 @@ if [ ! -f /sys/firmware/efi/fw_platform_size ]; then
     exit 2
 fi
 
-read -p "\nFormat disks? [y/n] " formatanswer
+echo -e "\n"
+read -p "Format disks? [y/n] " formatanswer
 if [[ $formatanswer = y ]] ; then
     lsblk
     read -p "Enter the drive (e.g. /dev/sda): " drive
@@ -37,13 +38,15 @@ if [[ $formatanswer = y ]] ; then
     mkfs.ext4 $partition 
 
     fdisk -l $drive
-    read -p "\nDid you also create efi partition? [y/n] " efianswer
+    echo -e "\n"
+    read -p "Did you also create efi partition? [y/n] " efianswer
     if [[ $efianswer = y ]] ; then
       read -p "Enter EFI partition (e.g. /dev/sda1): " efipartition
       mkfs.vfat -F 32 $efipartition
     fi
 
-    read -p "\nDid you also create a swap partition? [y/n] " swapanswer
+    echo -e "\n"
+    read -p "Did you also create a swap partition? [y/n] " swapanswer
     if [[ $swapanswer = y ]] ; then
       read -p "Enter SWAP partition (e.g. /dev/sda2): " swappartition
       mkswap $swappartition
@@ -61,7 +64,8 @@ if [[ $formatanswer = y ]] ; then
     fi
 fi
 
-read -p "\nDo you want to automatically select the fastest mirrors? [y/n] " answer
+echo -e "\n"
+read -p "Do you want to automatically select the fastest mirrors? [y/n] " answer
 if [[ $answer = y ]] ; then
   echo "Selecting the fastest mirrors"
   reflector --latest 20 --sort rate --save /etc/pacman.d/mirrorlist --protocol https --download-timeout 5
