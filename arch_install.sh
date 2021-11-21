@@ -101,38 +101,12 @@ echo -e "\n### Setting up bootloader"
 pacman --noconfirm -S refind
 refind-install
 echo "\"Boot using default options\" \"root=PARTUUID=$(lsblk -dno PARTUUID $partition) rw add_efi_memmap initrd=boot\intel-ucode.img initrd=boot\initramfs-linux.img\"" > /boot/refind_linux.conf
-read -p "Did you want to create a Pacman hook for rEFInd? [y/n] " hookanswer
-if [[ $hookanswer = y ]] ; then
-  mkdir -p /etc/pacman.d/hooks
-  touch /etc/pacman.d/hooks/refind.hook
-  echo "[Trigger]" > /etc/pacman.d/hooks/refind.hook
-  echo "Operation=Upgrade" >> /etc/pacman.d/hooks/refind.hook
-  echo "Type=Package" >> /etc/pacman.d/hooks/refind.hook
-  echo "Target=refind" >> /etc/pacman.d/hooks/refind.hook
-  echo -e "\n[Action]" >> /etc/pacman.d/hooks/refind.hook
-  echo "Description = Updating rEFInd on ESP" >> /etc/pacman.d/hooks/refind.hook
-  echo "When=PostTransaction" >> /etc/pacman.d/hooks/refind.hook
-  echo "Exec=/usr/bin/refind-install" >> /etc/pacman.d/hooks/refind.hook
-fi
 
 echo -e "\n### Creating user"
 read -p "Enter Username: " username
 useradd -mG wheel $username
 passwd $username
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
-
-read -p "Set up reflector service to update mirrorlist? [y/n] " reflectoranswer
-if [[ $reflectoranswer = y ]] ; then
-  pacman -S --noconfirm reflector 
-  echo "--country United States" >> /etc/xdg/reflector/reflector.conf
-  echo "--download-timeout 5" >> /etc/xdg/reflector/reflector.conf
-  systemctl enable --now reflector.service
-fi
-
-echo -e "\n### Setting up networking"
-pacman -S --noconfirm iwd 
-systemctl enable --now systemd-resolved.service systemd-networkd.service iwd.service
-#systemctl enable NetworkManager.service 
 
 echo -e "\n### Pre-Installation Finished"
 ai3_path=/home/$username/arch_install3.sh
@@ -152,7 +126,8 @@ echo -e "\n### Setting up yay package manager"
 sudo pacman -S --noconfirm git 
 git clone https://aur.archlinux.org/yay.git
 cd yay
-makepkg -si
+makepkg --noconfirm -si
+cd $HOME
 
 echo -e "\n### Installing packages"
 yay -S --noconfirm vim emacs \
@@ -162,7 +137,7 @@ yay -S --noconfirm vim emacs \
     noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-font-awesome papirus-icon-theme \
     fcitx5 fcitx5-chinese-addons emote \
     imv mpv zathura zathura-pdf-mupdf ffmpeg imagemagick  \
-    man-db man-pages \
+    man-db man-pages iwd \
     fzf fd rsync wget2 youtube-dl unclutter htop openssh usbutils \
     zip unzip unrar p7zip \
     python-pyserial arduino-cli ch34x-dkms-git \
@@ -173,17 +148,51 @@ yay -S --noconfirm vim emacs \
     spotify ferdi-bin google-chrome anki
 
 
-#git clone --separate-git-dir=$HOME/.dotfiles https://github.com/bugswriter/dotfiles.git tmpdotfiles
-#rsync --recursive --verbose --exclude '.git' tmpdotfiles/ $HOME/
-#rm -r tmpdotfiles
+echo -e "\n### Setting up dotfiles"
+git clone --separate-git-dir=$HOME/.dotfiles https://github.com/louisethomas/dotfiles.git tmpdotfiles
+rsync --recursive --verbose --exclude '.git' tmpdotfiles/ $HOME/
+rm -r tmpdotfiles
+alias dots='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+dots config --local status.showUntrackedFiles no
 
-
-#ln -s ~/.config/x11/xinitrc .xinitrc
-#ln -s ~/.config/shell/profile .zprofile
-#sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-#mv ~/.oh-my-zsh ~/.config/zsh/oh-my-zsh
-#rm ~/.zshrc ~/.zsh_history
 #mkdir -p ~/dl ~/vids ~/music ~/dox ~/code ~/pix/ss
-#alias dots='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-#dots config --local status.showUntrackedFiles no
-#exit
+
+exit
+sed '1,/^###\ Part\ 4$/d' $ai3_path > /arch_install4.sh
+rm $ai3_path
+chmod +x arch_install4.sh
+./arch_install4.sh
+
+
+### Part 4
+printf '\033c'
+echo -e "\n### Starting services"
+
+read -p "Did you want to create a Pacman hook for rEFInd? [y/n] " hookanswer
+if [[ $hookanswer = y ]] ; then
+  mkdir -p /etc/pacman.d/hooks
+  touch /etc/pacman.d/hooks/refind.hook
+  echo "[Trigger]" > /etc/pacman.d/hooks/refind.hook
+  echo "Operation=Upgrade" >> /etc/pacman.d/hooks/refind.hook
+  echo "Type=Package" >> /etc/pacman.d/hooks/refind.hook
+  echo "Target=refind" >> /etc/pacman.d/hooks/refind.hook
+  echo -e "\n[Action]" >> /etc/pacman.d/hooks/refind.hook
+  echo "Description = Updating rEFInd on ESP" >> /etc/pacman.d/hooks/refind.hook
+  echo "When=PostTransaction" >> /etc/pacman.d/hooks/refind.hook
+  echo "Exec=/usr/bin/refind-install" >> /etc/pacman.d/hooks/refind.hook
+fi
+
+read -p "Set up reflector service to update mirrorlist? [y/n] " reflectoranswer
+if [[ $reflectoranswer = y ]] ; then
+  pacman -S --noconfirm reflector 
+  echo "--country United States" >> /etc/xdg/reflector/reflector.conf
+  echo "--download-timeout 5" >> /etc/xdg/reflector/reflector.conf
+  systemctl enable --now reflector.service
+fi
+
+echo -e "\n### Setting up networking"
+systemctl enable --now systemd-resolved.service systemd-networkd.service iwd.service
+
+echo -e "\n### Installation finished - reboot computer"
+exit
+unmount -R /mnt
