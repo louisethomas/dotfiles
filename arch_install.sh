@@ -28,7 +28,7 @@ if [ ! -f /sys/firmware/efi/fw_platform_size ]; then
     exit 2
 fi
 
-read -p "Format disks? [y/n] " formatanswer
+read -p "\nFormat disks? [y/n] " formatanswer
 if [[ $formatanswer = y ]] ; then
     lsblk
     read -p "Enter the drive (e.g. /dev/sda): " drive
@@ -37,13 +37,13 @@ if [[ $formatanswer = y ]] ; then
     mkfs.ext4 $partition 
 
     fdisk -l $drive
-    read -p "Did you also create efi partition? [y/n] " efianswer
+    read -p "\nDid you also create efi partition? [y/n] " efianswer
     if [[ $efianswer = y ]] ; then
       read -p "Enter EFI partition (e.g. /dev/sda1): " efipartition
       mkfs.vfat -F 32 $efipartition
     fi
 
-    read -p "Did you also create a swap partition? [y/n] " swapanswer
+    read -p "\nDid you also create a swap partition? [y/n] " swapanswer
     if [[ $swapanswer = y ]] ; then
       read -p "Enter SWAP partition (e.g. /dev/sda2): " swappartition
       mkswap $swappartition
@@ -61,7 +61,7 @@ if [[ $formatanswer = y ]] ; then
     fi
 fi
 
-read -p "Do you want to automatically select the fastest mirrors? [y/n] " answer
+read -p "\nDo you want to automatically select the fastest mirrors? [y/n] " answer
 if [[ $answer = y ]] ; then
   echo "Selecting the fastest mirrors"
   reflector --latest 20 --sort rate --save /etc/pacman.d/mirrorlist --protocol https --download-timeout 5
@@ -97,8 +97,8 @@ echo "127.0.1.1       $hostname" >> /etc/hosts
 echo -e "\n### Creating root password"
 passwd
 
+pacman --noconfirm -S refind git archlinux-keyring
 echo -e "\n### Setting up bootloader"
-pacman --noconfirm -S refind
 refind-install
 echo "\"Boot using default options\" \"root=PARTUUID=$(lsblk -dno PARTUUID $partition) rw add_efi_memmap initrd=boot\intel-ucode.img initrd=boot\initramfs-linux.img\"" > /boot/refind_linux.conf
 
@@ -123,7 +123,6 @@ printf '\033c'
 echo -e "\n### Configuring user environment"
 cd $HOME
 echo -e "\n### Setting up yay package manager"
-sudo pacman -S --noconfirm git 
 git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg --noconfirm -si
