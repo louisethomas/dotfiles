@@ -101,7 +101,23 @@ echo "127.0.1.1       $hostname" >> /etc/hosts
 echo -e "\n### Creating root password"
 passwd
 
-pacman --noconfirm -S refind git archlinux-keyring
+echo -e "\n### Installing packages"
+pacman --noconfirm -S archlinux-keyring \
+    vim emacs git refind \
+    sway swayidle swaylock waybar wl-clipboard mako \
+    xf86-video-nouveau qt5-wayland \
+    noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-font-awesome papirus-icon-theme \
+    fcitx5 fcitx5-chinese-addons \
+    imv mpv zathura zathura-pdf-mupdf ffmpeg imagemagick  \
+    man-db man-pages iwd \
+    fzf fd rsync youtube-dl unclutter htop openssh usbutils \
+    zip unzip unrar p7zip \
+    python-pyserial arduino-cli ch34x-dkms-git \
+    cups cups-pdf swappy \
+    bluez bluez-utils brightnessctl \
+    pulseaudio pulseaudio-alsa pavucontrol pulsemixer \
+    alacritty fish zoxide 
+
 echo -e "\n### Setting up bootloader"
 refind-install
 echo "\"Boot using default options\" \"root=PARTUUID=$(lsblk -dno PARTUUID $partition) rw add_efi_memmap initrd=boot\intel-ucode.img initrd=boot\initramfs-linux.img\"" > /boot/refind_linux.conf
@@ -112,65 +128,7 @@ useradd -mG wheel $username
 passwd $username
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
-echo -e "\n### Pre-Installation Finished"
-ai3_path=/home/$username/arch_install3.sh
-sed '1,/^###\ Part\ 3$/d' arch_install2.sh > $ai3_path
-rm arch_install2.sh
-chown $username:$username $ai3_path
-chmod +x $ai3_path
-su -c $ai3_path -s /bin/sh $username
-exit 
-
-
-### Part 3
-printf '\033c'
-echo -e "\n### Configuring user environment"
-cd $HOME
-echo -e "\n### Setting up yay package manager"
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg --noconfirm -si
-cd $HOME
-
-echo -e "\n### Installing packages"
-yay -S --noconfirm vim emacs \
-    sway sway-launcher-desktop swayidle swaylock waybar wl-clip mako wev \
-    xf86-video-nouveau qt5-wayland xorg-xwayland \
-    greetd greetd-gtkgreet \
-    noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-font-awesome papirus-icon-theme \
-    fcitx5 fcitx5-chinese-addons emote \
-    imv mpv zathura zathura-pdf-mupdf ffmpeg imagemagick  \
-    man-db man-pages iwd \
-    fzf fd rsync wget2 youtube-dl unclutter htop openssh usbutils \
-    zip unzip unrar p7zip \
-    python-pyserial arduino-cli ch34x-dkms-git \
-    cups cups-pdf grimshot swappy \
-    bluez bluez-utils brightnessctl \
-    pulseaudio pulseaudio-alsa pulseaudio-modules-bt pavucontrol pulsemixer \
-    alacritty fish zoxide \
-    spotify ferdi-bin google-chrome anki
-
-
-echo -e "\n### Setting up dotfiles"
-git clone --separate-git-dir=$HOME/.dotfiles https://github.com/louisethomas/dotfiles.git tmpdotfiles
-rsync --recursive --verbose --exclude '.git' tmpdotfiles/ $HOME/
-rm -r tmpdotfiles
-alias dots='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-dots config --local status.showUntrackedFiles no
-
-#mkdir -p ~/dl ~/vids ~/music ~/dox ~/code ~/pix/ss
-
-exit
-sed '1,/^###\ Part\ 4$/d' $ai3_path > /arch_install4.sh
-rm $ai3_path
-chmod +x arch_install4.sh
-./arch_install4.sh
-
-
-### Part 4
-printf '\033c'
 echo -e "\n### Starting services"
-
 read -p "Did you want to create a Pacman hook for rEFInd? [y/n] " hookanswer
 if [[ $hookanswer = y ]] ; then
   mkdir -p /etc/pacman.d/hooks
@@ -196,6 +154,42 @@ fi
 echo -e "\n### Setting up networking"
 systemctl enable --now systemd-resolved.service systemd-networkd.service iwd.service
 
-echo -e "\n### Installation finished - reboot computer"
+echo -e "\n### Pre-Installation Finished"
+ai3_path=/home/$username/arch_install3.sh
+sed '1,/^###\ Part\ 3$/d' arch_install2.sh > $ai3_path
+rm arch_install2.sh
+chown $username:$username $ai3_path
+chmod +x $ai3_path
+su -c $ai3_path -s /bin/sh $username
+exit 
+
+
+### Part 3
+printf '\033c'
+echo -e "\n### Configuring user environment"
+cd $HOME
+echo -e "\n### Setting up yay package manager"
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg --noconfirm -si
+cd $HOME
+
+echo -e "\n### Installing AUR packages"
+yay -S greetd greetd-gtkgreet \
+    sway-launcher-desktop wev xorg-xwayland \
+    wget2 ch34x-dkms-git grimshot \
+    pulseaudio-modules-bt \
+    spotify ferdi-bin google-chrome anki
+
+
+echo -e "\n### Setting up dotfiles"
+git clone --separate-git-dir=$HOME/.dotfiles https://github.com/louisethomas/dotfiles.git tmpdotfiles
+rsync --recursive --verbose --exclude '.git' tmpdotfiles/ $HOME/
+rm -r tmpdotfiles
+git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME config --local status.showUntrackedFiles no
+
+#mkdir -p ~/dl ~/vids ~/music ~/dox ~/code ~/pix/ss
+
+
+echo -e "\n### Installation finished"
 exit
-unmount -R /mnt
