@@ -28,42 +28,38 @@ if [ ! -f /sys/firmware/efi/fw_platform_size ]; then
     exit 2
 fi
 
-echo -en "\nFormat disks? [y/n] "
-read formatanswer
-if [[ $formatanswer = y ]] ; then
-    lsblk
-    read -p "Enter the drive (e.g. /dev/sda): " drive
-    cfdisk $drive
-    read -p "Enter the linux root partition (/dev/sda3): " partition
-    mkfs.ext4 $partition 
+echo -e "\n### Formatting disks "
+lsblk
+read -p "Enter the drive (e.g. /dev/sda): " drive
+cfdisk $drive
+read -p "Enter the linux root partition (/dev/sda3): " partition
+mkfs.ext4 $partition 
 
-    fdisk -l $drive
-    echo -en "\nDid you also create efi partition? [y/n] "
-    read efianswer
-    if [[ $efianswer = y ]] ; then
-      read -p "Enter EFI partition (e.g. /dev/sda1): " efipartition
-      mkfs.vfat -F 32 $efipartition
-    fi
-
-    read -p "Did you also create a swap partition? [y/n] " swapanswer
-    if [[ $swapanswer = y ]] ; then
-      read -p "Enter SWAP partition (e.g. /dev/sda2): " swappartition
-      mkswap $swappartition
-    fi
-
-    echo -e "\n### Mounting file system"
-    mount $partition /mnt 
-    if [[ $efianswer = y ]] ; then
-      mkdir -p /mnt/boot/efi
-      mount $efipartition /mnt/boot/efi
-    fi
-    if [[ $swapanswer = y ]] ; then
-      swapon $swappartition
-    fi
-else
-    lsblk
-    read -p "Enter the linux root partition (/dev/sda3): " partition
+fdisk -l $drive
+echo -en "\nDid you also create efi partition? [y/n] "
+read efianswer
+if [[ $efianswer = y ]] ; then
+  read -p "Enter EFI partition (e.g. /dev/sda1): " efipartition
+  mkfs.vfat -F 32 $efipartition
 fi
+
+read -p "Did you also create a swap partition? [y/n] " swapanswer
+if [[ $swapanswer = y ]] ; then
+  read -p "Enter SWAP partition (e.g. /dev/sda2): " swappartition
+  mkswap $swappartition
+fi
+
+echo -e "\n### Mounting file system"
+mount $partition /mnt 
+lsblk -dno PARTUUID $partition > /mnt/partuuid
+if [[ $efianswer = y ]] ; then
+  mkdir -p /mnt/boot/efi
+  mount $efipartition /mnt/boot/efi
+fi
+if [[ $swapanswer = y ]] ; then
+  swapon $swappartition
+fi
+
 
 echo -en "\nDo you want to automatically select the fastest mirrors? [y/n] "
 read answer
@@ -111,7 +107,7 @@ pacman --noconfirm -S vim emacs git refind \
     fcitx5 fcitx5-chinese-addons \
     imv mpv zathura zathura-pdf-mupdf ffmpeg imagemagick  \
     man-db man-pages iwd \
-    fzf fd rsync youtube-dl unclutter htop openssh usbutils \
+    fzf fd rsync youtube-dl unclutter htop openssh usbutils go \
     zip unzip unrar p7zip \
     python-pyserial arduino-cli \
     cups cups-pdf swappy \
@@ -121,8 +117,7 @@ pacman --noconfirm -S vim emacs git refind \
 
 echo -e "\n### Setting up bootloader"
 refind-install
-echo "$partition"
-echo "\"Boot using default options\" \"root=PARTUUID=$(lsblk -dno PARTUUID $partition) rw add_efi_memmap initrd=boot\intel-ucode.img initrd=boot\initramfs-linux.img\"" > /boot/refind_linux.conf
+echo "\"Boot using default options\" \"root=PARTUUID=$(</partuuid) rw add_efi_memmap initrd=boot\intel-ucode.img initrd=boot\initramfs-linux.img\"" > /boot/refind_linux.conf
 
 echo -e "\n### Creating user"
 read -p "Enter Username: " username
@@ -153,8 +148,8 @@ if [[ $reflectoranswer = y ]] ; then
   systemctl enable --now reflector.service
 fi
 
-echo -e "\n### Setting up networking"
-read -p "Set up networking with iwd? [y/n] " iwdanswer
+echo -en "\nSet up networking with iwd? [y/n] "
+read iwdanswer
 if [[ $iwdanswer = y ]] ; then
     systemctl enable --now systemd-resolved.service systemd-networkd.service iwd.service
 fi
