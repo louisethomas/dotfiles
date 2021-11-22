@@ -60,9 +60,12 @@ if [[ $formatanswer = y ]] ; then
     if [[ $swapanswer = y ]] ; then
       swapon $swappartition
     fi
+else
+    lsblk
+    read -p "Enter the linux root partition (/dev/sda3): " partition
 fi
 
-echo -e "\nDo you want to automatically select the fastest mirrors? [y/n] "
+echo -en "\nDo you want to automatically select the fastest mirrors? [y/n] "
 read answer
 if [[ $answer = y ]] ; then
   echo "Selecting the fastest mirrors"
@@ -99,9 +102,9 @@ echo "127.0.1.1       $hostname" >> /etc/hosts
 echo -e "\n### Creating root password"
 passwd
 
+pacman --noconfirm -S archlinux-keyring 
 echo -e "\n### Installing packages"
-pacman --noconfirm -S archlinux-keyring \
-    vim emacs git refind \
+pacman --noconfirm -S vim emacs git refind \
     sway swayidle swaylock waybar wl-clipboard mako \
     xf86-video-nouveau qt5-wayland \
     noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-font-awesome papirus-icon-theme \
@@ -118,6 +121,7 @@ pacman --noconfirm -S archlinux-keyring \
 
 echo -e "\n### Setting up bootloader"
 refind-install
+echo "$partition"
 echo "\"Boot using default options\" \"root=PARTUUID=$(lsblk -dno PARTUUID $partition) rw add_efi_memmap initrd=boot\intel-ucode.img initrd=boot\initramfs-linux.img\"" > /boot/refind_linux.conf
 
 echo -e "\n### Creating user"
@@ -150,7 +154,10 @@ if [[ $reflectoranswer = y ]] ; then
 fi
 
 echo -e "\n### Setting up networking"
-systemctl enable --now systemd-resolved.service systemd-networkd.service iwd.service
+read -p "Set up networking with iwd? [y/n] " iwdanswer
+if [[ $iwdanswer = y ]] ; then
+    systemctl enable --now systemd-resolved.service systemd-networkd.service iwd.service
+fi
 
 echo -e "\n### Pre-Installation Finished"
 ai3_path=/home/$username/arch_install3.sh
@@ -169,11 +176,11 @@ cd $HOME
 echo -e "\n### Setting up yay package manager"
 git clone https://aur.archlinux.org/yay.git
 cd yay
-makepkg --noconfirm -si
+makepkg -si
 cd $HOME
 
 echo -e "\n### Installing AUR packages"
-yay -S greetd greetd-gtkgreet \
+yay --noconfirm -S greetd greetd-gtkgreet \
     sway-launcher-desktop wev xorg-xwayland \
     wget2 ch34x-dkms-git grimshot \
     pulseaudio-modules-bt \
