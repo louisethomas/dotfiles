@@ -60,7 +60,6 @@ if [[ $swapanswer = y ]] ; then
   swapon $swappartition
 fi
 
-
 echo -en "\nDo you want to automatically select the fastest mirrors? [y/n] "
 read answer
 if [[ $answer = y ]] ; then
@@ -118,6 +117,10 @@ pacman --noconfirm -S vim emacs git refind \
 echo -e "\n### Setting up bootloader"
 refind-install
 echo "\"Boot using default options\" \"root=PARTUUID=$(</partuuid) rw add_efi_memmap initrd=boot\intel-ucode.img initrd=boot\initramfs-linux.img\"" > /boot/refind_linux.conf
+rm /partuuid
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/bobafetthotmail/refind-theme-regular/master/install.sh)"
+## need to edit settings at /boot/efi/EFI/refind/refind-theme-regular/theme.conf as root
+
 
 echo -e "\n### Creating user"
 read -p "Enter Username: " username
@@ -175,7 +178,7 @@ makepkg -si
 cd $HOME
 
 echo -e "\n### Installing AUR packages"
-yay --noconfirm -S greetd greetd-gtkgreet \
+yay -S greetd greetd-gtkgreet \
     sway-launcher-desktop wev xorg-xwayland \
     wget2 ch34x-dkms-git grimshot \
     pulseaudio-modules-bt \
@@ -192,4 +195,5 @@ git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME config --local status.showUntra
 
 
 echo -e "\n### Installation finished"
+rm $HOME/arch_install3.sh
 exit
