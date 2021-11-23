@@ -157,6 +157,13 @@ if [[ $iwdanswer = y ]] ; then
     systemctl enable --now systemd-resolved.service systemd-networkd.service iwd.service
 fi
 
+echo -en "\nSet up Bluetooth service? [y/n] "
+read bluezanswer
+if [[ $bluezanswer = y ]] ; then
+    modprobe btusb
+    systemctl enable --now bluetooth.service
+fi
+
 echo -e "\n### Pre-Installation Finished"
 ai3_path=/home/$username/arch_install3.sh
 sed '1,/^###\ Part\ 3$/d' arch_install2.sh > $ai3_path
