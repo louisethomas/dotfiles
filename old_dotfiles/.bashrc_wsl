@@ -1,0 +1,71 @@
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+[[ -z "$TMUX" ]] && exec tmux #start tmux when using bash
+
+alias ls='ls --color=auto'
+alias dir='dir --color=auto'
+
+# fix folder colors
+LS_COLORS="ow=01;34" && export LS_COLORS
+
+
+PROMPT_COMMAND='status="[$?]"; if [[ $status == "[0]" ]]; then status=; fi'
+PS1='\e[1;35m[\w]$status\$ \e[0m '
+
+set -o vi
+#cd /mnt/c/Users/louise/Documents  #start in Documents folder
+
+# source fzf bindings
+source /usr/share/fzf/key-bindings.bash && source /usr/share/fzf/completion.bash 
+
+# mount Google File stream
+alias gdrive='. /mnt/c/Users/louise/Documents/scripts/snippets/sshfs_drive.sh'
+
+# set display for VcXsrv
+export DISPLAY=`grep -oP "(?<=nameserver ).+" /etc/resolv.conf`:0
+# x11 opengl rendering options 
+export LIBGL_ALWAYS_INDIRECT=0
+export LIBGL_ALWAYS_SOFTWARE=0
+
+# python path
+export PYTHONPATH="${PYTHONPATH}:/home/louise/.local/lib"
+
+# start powerline
+powerline-daemon -q
+POWERLINE_BASH_CONTINUATION=1
+POWERLINE_BASH_SELECT=1
+. /usr/share/powerline/bindings/bash/powerline.sh
+
+# arduino-cli shortcuts
+alias compile='arduino-cli compile -b arduino:avr:nano:cpu=atmega328old'
+alias upload='arduino-cli upload -p /dev/ttyUSB0 -b arduino:avr:nano:cpu=atmega328old'
+
+# pi ssh shortcuts
+alias pumpi='ssh pi@10.147.20.141'
+alias canolapi='ssh pi@10.147.20.170'
+alias tensorpi='ssh pi@10.147.20.12'
+
+# shortcut for Documents directory
+alias documents='cd /mnt/c/Users/louise/Documents'
+
+# shortcut for code directory
+alias scripts='cd /mnt/c/Users/louise/Documents/scripts'
+
+# prevent ranger from loading config file twice
+export RANGER_LOAD_DEFAULT_RC=false
+
+# shortcut for pipenv (python virtual environment)
+alias prp="pipenv run python"
+
+# alias for running Chinese character search
+alias 汉字="python /mnt/c/Users/louise/Documents/scripts/chinese-character-search/search_char.py"
+
+# alias for deleting swap files
+alias rmswap='rm ~/.cache/vim/swap/*'
+
+# alias for updating windows terminal settings
+alias termupdate='cp ~/dotfiles/windowsterminal_settings.json /mnt/c/Users/louise/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json'
