@@ -194,7 +194,7 @@ yay -S greetd greetd-gtkgreet \
 
 echo -e "\n### Setting up dotfiles"
 git clone --separate-git-dir=$HOME/.dotfiles https://github.com/louisethomas/dotfiles.git tmpdotfiles
-rsync --recursive --verbose --exclude '.git' tmpdotfiles/ $HOME/
+rsync --recursive --verbose --exclude={'.git', 'old_dotfiles', 'arch_install.sh'} tmpdotfiles/ $HOME/
 rm -r tmpdotfiles
 git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME config --local status.showUntrackedFiles no
 
