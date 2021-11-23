@@ -1,0 +1,89 @@
+### Variables
+#
+	# Logo key. Use Mod1 for Alt.
+	set $mod Mod4
+
+	# Set direction keys to be vim-like
+	set $left h
+	set $down j
+	set $up k
+	set $right l
+
+	# Set Alacritty as terminal emulator
+	set $term alacritty -e fish
+
+	# Set sway-launcher-desktop as application launcher
+	for_window [app_id="^launcher$"] floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 10
+	set $menu exec alacritty --class=launcher -e /usr/bin/sway-launcher-desktop
+
+	# Screenshots
+	set $screenshot grim ~/Images/screenshots/scrn-$(date +"%Y-%m-%d-%H-%M-%S").png
+	set $screenclip slurp | grim -g - ~/Images/screenshots/scrn-$(date +"%Y-%m-%d-%H-%M-%S").png
+
+
+
+### Key bindings
+#
+# Basics:
+#
+	# Start a terminal
+	bindsym $mod+Return exec $term
+
+	# Kill focused window
+	bindsym $mod+Shift+q kill
+	bindsym $mod+x kill
+
+	# Start your launcher
+	bindsym $mod+d exec $menu
+
+	# Drag floating windows by holding down $mod and left mouse button.
+	# Resize them with right mouse button + $mod.
+	# Despite the name, also works for non-floating windows.
+	# Change normal to inverse to use left mouse button for resizing and right
+	# mouse button for dragging.
+	floating_modifier $mod normal
+
+	# Reload the configuration file
+	bindsym $mod+Shift+c reload
+
+	# Exit sway (logs you out of your Wayland session)
+	#bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+
+	# Lock monitor
+	#bindsym $mod+p exec $lock
+
+	# Screenshots
+	bindsym $mod+Print exec $screenshot
+	bindsym $mod+Shift+Print exec $screenclip
+
+#
+# Functions:
+#
+	# Brightness controls
+	bindsym --locked XF86MonBrightnessDown exec brightnessctl set 10%-
+	bindsym --locked XF86MonBrightnessUp exec brightnessctl set +10%
+
+	# Notifications
+	bindsym $mod+n exec makoctl dismiss
+	bindsym $mod+Shift+n exec makoctl dismiss --all
+
+	# Multimedia
+	bindsym --locked XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume $(pacmd list-sinks |awk '/* index:/{print $3}') +5%
+	bindsym --locked XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume $(pacmd list-sinks |awk '/* index:/{print $3}') -5%
+	bindsym --locked XF86AudioMute exec --no-startup-id pactl set-sink-mute $(pacmd list-sinks |awk '/* index:/{print $3}') toggle
+	bindsym --locked XF86AudioPlay exec playerctl play-pause
+	bindsym --locked XF86AudioNext exec playerctl next
+	bindsym --locked XF86AudioPrev exec playerctl previous
+
+    # Emojis
+    bindsym $mod+period exec emote
+
+
+### Status Bar:
+bar {
+    swaybar_command waybar
+}
+
+include /etc/sway/config.d/*
+include ~/.config/sway/config.d/*
+

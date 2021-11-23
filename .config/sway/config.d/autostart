@@ -1,0 +1,6 @@
+
+### Autostart 
+exec --no-startup-id mako
+exec --no-startup-id fcitx5 -d
+# exec mailspring
+# exec spotify

@@ -1,0 +1,10 @@
+sort=-time
+layer=overlay
+background-color=#3a3a61
+border-size=2
+border-color=#6464e8
+border-radius=15
+default-timeout=10000
+
+[app-name=Spotify]
+default-timeout=2000
