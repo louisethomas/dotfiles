@@ -19,5 +19,5 @@ if status is-interactive
     abbr -a -U -- upload1 'arduino-cli upload -p /dev/serial/by-path/pci-0000:00:06.0-usb-0:2:1.0-port0 -b arduino:avr:nano:cpu=atmega328old'
     abbr -a -U -- upload2 'arduino-cli upload -p /dev/serial/by-path/pci-0000:00:06.0-usb-0:3:1.0-port0 -b arduino:avr:nano:cpu=atmega328old'
     abbr -a -U -- cd z
-    abbr -a -U -- dot '/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+    abbr -a -U -- dots '/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 end
