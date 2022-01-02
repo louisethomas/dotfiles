@@ -99,7 +99,7 @@ passwd
 
 pacman --noconfirm -S archlinux-keyring 
 echo -e "\n### Installing packages"
-pacman --noconfirm -S vim emacs git refind \
+pacman --noconfirm -S vim emacs git github-cli refind \
     sway swayidle swaylock waybar wl-clipboard mako \
     xf86-video-nouveau qt5-wayland \
     noto-fonts noto-fonts-emoji noto-fonts-cjk ttf-font-awesome papirus-icon-theme \
@@ -110,7 +110,7 @@ pacman --noconfirm -S vim emacs git refind \
     zip unzip unrar p7zip \
     python-pyserial arduino-cli \
     cups cups-pdf swappy \
-    bluez bluez-utils brightnessctl \
+    bluez bluez-utils brightnessctl cronie \
     pulseaudio pulseaudio-alsa pavucontrol pulsemixer \
     alacritty fish zoxide 
 
@@ -146,7 +146,7 @@ fi
 read -p "Set up reflector service to update mirrorlist? [y/n] " reflectoranswer
 if [[ $reflectoranswer = y ]] ; then
   pacman -S --noconfirm reflector 
-  echo "--country United States" >> /etc/xdg/reflector/reflector.conf
+  echo "--country "United States"" >> /etc/xdg/reflector/reflector.conf
   echo "--download-timeout 5" >> /etc/xdg/reflector/reflector.conf
   systemctl enable --now reflector.service
 fi
@@ -157,12 +157,25 @@ if [[ $iwdanswer = y ]] ; then
     systemctl enable --now systemd-resolved.service systemd-networkd.service iwd.service
 fi
 
+echo -en "\nSet up greeter? [y/n] "
+read greetanswer
+if [[ $greetanswer = y ]] ; then
+    systemctl enable --now greetd.service
+fi
+
 echo -en "\nSet up Bluetooth service? [y/n] "
 read bluezanswer
 if [[ $bluezanswer = y ]] ; then
     modprobe btusb
     systemctl enable --now bluetooth.service
 fi
+
+echo -en "\nSet up Cronie service? [y/n] "
+read cronanswer
+if [[ $cronanswer = y ]] ; then
+    systemctl enable --now cronie.service
+fi
+
 
 echo -e "\n### Pre-Installation Finished"
 ai3_path=/home/$username/arch_install3.sh
@@ -185,16 +198,18 @@ makepkg -si
 cd $HOME
 
 echo -e "\n### Installing AUR packages"
-yay -S greetd greetd-gtkgreet \
-    sway-launcher-desktop wev xorg-xwayland \
+yay -S greetd greetd-gtkgreet gnome-themes-extra\
+    sway-launcher-desktop wev wob xorg-xwayland \
     wget2 ch34x-dkms-git grimshot \
     pulseaudio-modules-bt \
-    spotify ferdi-bin google-chrome anki
+    spotify ferdi-bin google-chrome anki-bin
 
+gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
 
 echo -e "\n### Setting up dotfiles"
-git clone --separate-git-dir=$HOME/.dotfiles https://github.com/louisethomas/dotfiles.git tmpdotfiles
-rsync --recursive --verbose --exclude={'.git', 'old_dotfiles', 'arch_install.sh'} tmpdotfiles/ $HOME/
+git clone --separate-git-dir=$HOME/.dotfiles git@github.com:louisethomas/dotfiles.git tmpdotfiles
+rsync --recursive --verbose --exclude={'.git', 'old_dotfiles/\*', 'greetd/\*', 'arch_install.sh'} tmpdotfiles/ $HOME/
+rsync --recursive --verbose tmpdotfiles/greetd/ /etc/greetd
 rm -r tmpdotfiles
 git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME config --local status.showUntrackedFiles no
 
