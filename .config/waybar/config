@@ -2,27 +2,39 @@
     "layer": "bottom",
     "position": "top",
     "height": 30,
-
-    "modules-left": ["sway/workspaces", "sway/mode"],
+    "spacing": 5,
+    "modules-left": ["sway/workspaces", "tray", "sway/mode"],
     "modules-center": ["sway/window"],
-    "modules-right": ["tray", "custom/spotify", "custom/weather", "custom/mail", "custom/storage", "pulseaudio", "network", "battery", "clock"],
+    "modules-right": ["custom/weather", "custom/storage", "pulseaudio", "bluetooth", "network", "battery", "clock"],
     "sway/mode": {
         "format": " {}"
     },
     "sway/workspaces": {
-        "format": "{name}",
-        "disable-scroll": true
+        "format": "{icon}",
+        "disable-scroll": true,
+        "format-icons": {
+            "Slack" : "",
+            "Music" : "",
+            "Vault" : "",
+            "Notion" : "",
+            "Browser" : "",
+            "Tasks" : "",
+            "Terminal" : "",
+            "Ferdium" : ""
+        }
     },
     "sway/window": {
-        "max-length": 80,
-        "tooltip": false
+        "max-length": 50,
     },
+
     "clock": {
         "format": "{:%a %d %b %H:%M}",
         "tooltip": false
     },
     "battery": {
         "format": "{capacity}% {icon}",
+        "format-alt": "{time} {icon}",
+        "format-alt-click": "click-right",
         "format-icons": ["", "", "", "", ""],
         "format-charging": "{capacity}% ",
         "interval": 30,
@@ -32,31 +44,46 @@
         },
         "tooltip": false
     },
+    "backlight": {
+        "device": "intel_backight",
+        "format": "{percent}% {icon}",
+        "format-icons": ["", "盛"],
+        "on-scroll-down": "brightnessctl set +1%",
+        "on-scroll-up": "brightnessctl set 1%-",
+    },
     "network": {
-        "format": "{icon}",
-        "format-alt": "{ipaddr}/{cidr} {icon}",
+        "format": "{ifname}",
+        "format-wifi": "{essid} ",
+        "format-ethernet": "{ifname} ",
+        "format-disconnected": "睊",
+        "format-alt": " {ipaddr}/{cidr}",
         "format-alt-click": "click-right",
-        "format-icons": {
-            "wifi": [""],
-            "ethernet": [""],
-            "disconnected": ["睊"]
-        },
-        "on-click": "alacrity iwctl",
-    "tooltip": false
+        "on-click": "iwgtk",
+        "max-length": 50,
+        "tooltip-format-wifi": "  {ifname} @ {essid}\nIP: {ipaddr}\nStrength: {signalStrength}%\nFreq: {frequency}MHz\n {bandwidthUpBits}  {bandwidthDownBits}",
+        "tooltip-format-ethernet": " {ifname}\nIP: {ipaddr}\n {bandwidthUpBits}  {bandwidthDownBits}"
+
     },
     "pulseaudio": {
-        "format": "{volume}{icon}",
-        "format-alt": "{icon}",
-        "format-alt-click": "click-right",
-        "format-muted": "ﱝ",
+        "format": " {volume} {icon}",
+        "format-muted": " ",
         "format-icons": {
-            "phone": [" ", " ", " "],
+            "headset": [" ", " ", " "],
             "default": ["", "", ""]
         },
         "scroll-step": 10,
         "on-click": "pavucontrol",
         "tooltip": false
     },
+    "bluetooth": {
+        "format": " ",
+        "format-off": " ",
+        "format-connected": "  {device_alias}",
+        "format-connected-battery": "  {device_alias} {device_battery_percentage}%",
+        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+    },
+
     "custom/spotify": {
         "interval": 1,
         "return-type": "json",
@@ -72,22 +99,10 @@
         "interval": 60,
         "exec": "~/.config/waybar/modules/storage.sh"
     },
-    "backlight": {
-        "format": "{icon}",
-        "format-alt": "{percent}% {icon}",
-        "format-alt-click": "click-right",
-        "format-icons": ["", ""],
-        "on-scroll-down": "light -A 1",
-        "on-scroll-up": "light -U 1"
-    },
     "custom/weather": {
-        "format": "{}",
-        "format-alt": "{alt}: {}",
-        "format-alt-click": "click-right",
-        "interval": 1800,
-        "return-type": "json",
-        "exec": "~/.config/waybar/modules/weather.sh",
-        "exec-if": "ping wttr.in -c1"
+        "exec": "curl 'https://wttr.in/Union+City?m&format=1'",
+        "interval": 3600,
+        "tooltip": false
     },
     "custom/mail": {
         "format": "",
@@ -98,7 +113,13 @@
         "exec": "~/.config/waybar/modules/mail.py",
         "tooltip": false
     },
+    "custom/poweroff": {
+        "tooltip": false,
+        "format": "",
+        "on-click": "bash $HOME/.config/waybar/modules/poweroff.sh"
+    },
+
     "tray": {
-        "icon-size": 18
+        "spacing": 5
     }
 }
