@@ -1,6 +1,13 @@
 
 ### Autostart 
 exec --no-startup-id mako
+exec --no-startup-id udiskie
 exec --no-startup-id fcitx5 -d
+#exec --no-startup-id sworkstyle &> /tmp/sworkstyle.log
+#exec_always --no-startup-id workstyle &> /tmp/workstyle.log
 # exec mailspring
 # exec spotify
+
+# Indicator bar
+set $WOBSOCK $XDG_RUNTIME_DIR/wob.sock
+exec mkfifo $WOBSOCK && tail -f $WOBSOCK | wob

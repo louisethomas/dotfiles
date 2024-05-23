@@ -1,7 +1,8 @@
 ### Variables
 #
-	# Logo key. Use Mod1 for Alt.
+	# Use Mod1 for Alt, Mod4 for Super key, Mod2 for NumLock
 	set $mod Mod4
+	set $modw Mod1
 
 	# Set direction keys to be vim-like
 	set $left h
@@ -12,14 +13,11 @@
 	# Set Alacritty as terminal emulator
 	set $term alacritty -e fish
 
-	# Set sway-launcher-desktop as application launcher
-	for_window [app_id="^launcher$"] floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 10
-	set $menu exec alacritty --class=launcher -e /usr/bin/sway-launcher-desktop
-
 	# Screenshots
-	set $screenshot grim ~/Images/screenshots/scrn-$(date +"%Y-%m-%d-%H-%M-%S").png
-	set $screenclip slurp | grim -g - ~/Images/screenshots/scrn-$(date +"%Y-%m-%d-%H-%M-%S").png
-
+	set $screenshot grim ~/pics/screenshots/scrn-$(date +"%Y-%m-%d-%H-%M-%S").png
+	set $screenclip slurp | grim -g - ~/pics/screenshots/scrn-$(date +"%Y-%m-%d-%H-%M-%S").png
+    set $screenclip_edit grim -g "$(slurp)" - | swappy -f -
+    set $screencopy grim -g "$(slurp)" - | wl-copy
 
 
 ### Key bindings
@@ -31,10 +29,7 @@
 
 	# Kill focused window
 	bindsym $mod+Shift+q kill
-	bindsym $mod+x kill
-
-	# Start your launcher
-	bindsym $mod+d exec $menu
+	bindsym $mod+d kill
 
 	# Drag floating windows by holding down $mod and left mouse button.
 	# Resize them with right mouse button + $mod.
@@ -44,36 +39,35 @@
 	floating_modifier $mod normal
 
 	# Reload the configuration file
-	bindsym $mod+Shift+c reload
-
-	# Exit sway (logs you out of your Wayland session)
-	#bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+	bindsym $mod+Shift+r reload
 
 	# Lock monitor
-	#bindsym $mod+p exec $lock
+	bindsym $mod+Mod1+l exec $lock
 
 	# Screenshots
 	bindsym $mod+Print exec $screenshot
 	bindsym $mod+Shift+Print exec $screenclip
+	bindsym $mod+Shift+e exec $screenclip_edit
+	bindsym $mod+Shift+s exec $screencopy
 
 #
 # Functions:
 #
 	# Brightness controls
-	bindsym --locked XF86MonBrightnessDown exec brightnessctl set 10%-
-	bindsym --locked XF86MonBrightnessUp exec brightnessctl set +10%
+	bindsym --locked XF86MonBrightnessDown exec brightnessctl set 10%- | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $WOBSOCK
+	bindsym --locked XF86MonBrightnessUp exec brightnessctl set +10% | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $WOBSOCK
 
 	# Notifications
-	bindsym $mod+n exec makoctl dismiss
-	bindsym $mod+Shift+n exec makoctl dismiss --all
+	bindsym $mod+semicolon exec makoctl dismiss
+	bindsym $mod+colon exec makoctl dismiss --all
 
 	# Multimedia
 	bindsym --locked XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume $(pacmd list-sinks |awk '/* index:/{print $3}') +5%
 	bindsym --locked XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume $(pacmd list-sinks |awk '/* index:/{print $3}') -5%
 	bindsym --locked XF86AudioMute exec --no-startup-id pactl set-sink-mute $(pacmd list-sinks |awk '/* index:/{print $3}') toggle
-	bindsym --locked XF86AudioPlay exec playerctl play-pause
-	bindsym --locked XF86AudioNext exec playerctl next
-	bindsym --locked XF86AudioPrev exec playerctl previous
+	bindsym --locked XF86AudioPlay exec playerctl play-pause --player=spotify
+	bindsym --locked XF86AudioNext exec playerctl next --player=spotify
+	bindsym --locked XF86AudioPrev exec playerctl previous --player=spotify
 
     # Emojis
     bindsym $mod+period exec emote
@@ -86,4 +80,4 @@ bar {
 
 include /etc/sway/config.d/*
 include ~/.config/sway/config.d/*
-
+include ~/.config/sway/scripts

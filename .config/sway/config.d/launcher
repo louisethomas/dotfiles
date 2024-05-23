@@ -1,0 +1,15 @@
+
+# Set rofi as application launcher
+set $menu "rofi -show combi -combi-modi 'window:~/.config/sway/scripts/sway-window-switch,drun,ssh' -theme fancy -font 'hack 10' -icon-theme 'Papirus-Dark' -show-icons -modi combi"
+
+# Start your launcher
+bindsym $mod+o exec $menu
+
+# Start launcher in new window
+bindsym $mod+Shift+o exec '~/.config/sway/scripts/new-empty-workspace'; exec "rofi -modi drun -show drun -theme fancy -font 'hack 10' -icon-theme 'Papirus-Dark' -show-icons"
+
+
+# Use rofi as calculator
+set $calc "rofi -show calc -modi calc -theme sidebar -theme-str 'window {width:20%;}' -no-sort -no-show-match -no-persist-history -calc-command 'echo -n '{result}' | wl-copy'"
+bindsym $mod+c exec --no-startup-id  $calc
+

@@ -1,5 +1,4 @@
-# Set images
-set $lock 'swaylock -f -e -i $HOME/.config/sway/images/swaylock_image.jpg'
+# Set background image
 set $background ~/.config/sway/images/wallpaper.jpg
 
 # Background
@@ -18,8 +17,7 @@ client.unfocused        $cl_back $cl_back $cl_fore $cl_back $cl_back
 client.urgent           $cl_urge $cl_urge $cl_fore $cl_urge $cl_urge
 
 # Font
-#font pango:Droid Sans Mono Nerd Font Complete Mono 8
-font pango:Noto 10
+font pango:SourceCodePro 11
 
 # Window borders
 default_border pixel 2

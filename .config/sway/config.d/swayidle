@@ -1,4 +1,4 @@
-
+set $lock 'swaylock -i $HOME/.config/sway/images/swaylock_image.jpg'
 
 ### Idle configuration
 exec swayidle -w \
