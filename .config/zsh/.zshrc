@@ -48,3 +48,7 @@ eval "$(zoxide init zsh --cmd cd)"
 
 # never beep
 setopt NO_BEEP
+
+# track dotfiles with git
+alias dotfiles='/usr/bin/git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME"'
+dotfiles config status.showUntrackedFiles no
