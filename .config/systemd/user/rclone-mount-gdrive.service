@@ -1,0 +1,35 @@
+[Unit]
+Description=Mount Google Drive filesystem using rclone
+After=network.target
+
+[Service]
+ExecStartPre = rclone mount gdrive_personal: /home/louise/gdrive/personal --daemon
+ExecStartPre = rclone mount TF_gdrive: /home/louise/gdrive/tensorfield  --daemon
+ExecStartPre = rclone mount TF_corporation: /home/louise/gdrive/shared_tensorfield/corporation --daemon
+ExecStartPre = rclone mount TF_customer_development: /home/louise/gdrive/shared_tensorfield/customer_development --daemon
+ExecStartPre = rclone mount TF_finance: /home/louise/gdrive/shared_tensorfield/finance --daemon
+ExecStartPre = rclone mount TF_marketing: /home/louise/gdrive/shared_tensorfield/marketing --daemon
+ExecStartPre = rclone mount TF_ml: /home/louise/gdrive/shared_tensorfield/ml --daemon
+ExecStartPre = rclone mount TF_papers: /home/louise/gdrive/shared_tensorfield/papers --daemon
+ExecStartPre = rclone mount TF_presentations: /home/louise/gdrive/shared_tensorfield/presentations --daemon
+ExecStartPre = rclone mount TF_product_design: /home/louise/gdrive/shared_tensorfield/product_design --daemon
+ExecStartPre = rclone mount TF_team_notes: /home/louise/gdrive/shared_tensorfield/team_notes --daemon
+ExecStart = rclone mount TF_visas /home/louise/gdrive/shared_tensorfield/visas --daemon
+
+ExecStop = fusermount -u /home/louise/gdrive/personal
+ExecStop = fusermount -u /home/louise/gdrive/tensorfield 
+ExecStop = fusermount -u /home/louise/gdrive/shared_tensorfield/corporation
+ExecStop = fusermount -u /home/louise/gdrive/shared_tensorfield/customer_development
+ExecStop = fusermount -u /home/louise/gdrive/shared_tensorfield/finance
+ExecStop = fusermount -u /home/louise/gdrive/shared_tensorfield/marketing
+ExecStop = fusermount -u /home/louise/gdrive/shared_tensorfield/ml
+ExecStop = fusermount -u /home/louise/gdrive/shared_tensorfield/papers
+ExecStop = fusermount -u /home/louise/gdrive/shared_tensorfield/presentations
+ExecStop = fusermount -u /home/louise/gdrive/shared_tensorfield/product_design
+ExecStop = fusermount -u /home/louise/gdrive/shared_tensorfield/team_notes
+ExecStop = fusermount -u /home/louise/gdrive/shared_tensorfield/visas
+Restart = always
+Type = forking
+
+[Install]
+WantedBy=default.target
