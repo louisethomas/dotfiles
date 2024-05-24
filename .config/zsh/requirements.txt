@@ -2,3 +2,6 @@ zsh-autocomplete
 zsh-autosuggestions
 zsh-syntax-highlighting
 zsh-theme-powerlevel10k-git
+fzf
+ttf-meslo-nerd-font-powerlevel10k
+zoxide
