@@ -1,7 +1,7 @@
 require("lazy-config")
 
 -- options
-vim.opt.number = true
+vim.w.number = true
 vim.opt.cursorline = true
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
