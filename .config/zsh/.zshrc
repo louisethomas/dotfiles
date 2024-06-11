@@ -5,7 +5,13 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# source files in .zsh folder
+fpath=(~/.config/zsh/.zsh $fpath)
+
+# key bindings
 bindkey -v  # vim mode
+bindkey "^[[1;5C" forward-word    # ctrl-right to go forward one word
+bindkey "^[[1;5D" backward-word   # ctrl-left to go backward one word
 
 # plugins
 source /usr/share/zsh/plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
