@@ -59,6 +59,9 @@ setopt NO_BEEP
 alias dotfiles='/usr/bin/git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME"'
 dotfiles config status.showUntrackedFiles no
 
+# kitty ssh
+[ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"
+
 # aliases 
 alias n='nvim'
 alias vim='nvim'
