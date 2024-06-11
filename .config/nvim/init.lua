@@ -7,9 +7,9 @@ vim.opt.cursorline = true	-- highlight cursor line
 vim.opt.wrap = true		-- enable line wrapping
 vim.opt.spell = true	-- enable spell checking
 vim.opt.expandtab = true	-- use spaces instead of tabs
-vim.opt.tabstop = 4			-- tab = 4 spaces
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
+vim.opt.tabstop = 2			-- tab = 2 spaces
+vim.opt.softtabstop = 2
+vim.opt.shiftwidth = 2
 vim.opt.autoindent = true	-- enable auto-indentation
 vim.opt.smartindent = true	-- enable smart auto-indentation
 vim.opt.mouse = 'a'		-- enable mouse support
@@ -39,19 +39,21 @@ vim.keymap.set('i', 'jj', '<Esc>l')	-- 'jj' to exit insert mode
 
 -- color scheme
 require('kanagawa').setup({
-    ...,
-    colors = {
-        theme = {
-            all = {
-                ui = {
-                    bg_gutter = "none"
-                }
-            }
+  ...,
+  colors = {
+    theme = {
+      all = {
+        ui = {
+          bg_gutter = "none"
         }
-    },
-    ...
+      }
+    }
+  },
+  ...
 })
 vim.cmd("colorscheme kanagawa-wave")
 --vim.cmd("colorscheme kanagawa-dragon")
 --vim.cmd("colorscheme kanagawa-lotus")
 
+-- autocompletion
+require("lsp-zero-config")
