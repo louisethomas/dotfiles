@@ -1,3 +1,2 @@
-# ignore vim bundles
-.vim/
+.config/zsh/.zhistory
 .config/chromium/
